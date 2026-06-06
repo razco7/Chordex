@@ -823,6 +823,9 @@ body {
     <div class="builder-title">New Chord</div>
     <div class="builder-chord-name" id="builderChordName">—</div>
     <div class="builder-chord-full" id="builderChordFull"></div>
+    <div id="builderNameOverride" style="display:none;margin-bottom:12px">
+      <input class="song-name-input" id="builderCustomName" type="text" placeholder="Custom chord name…" maxlength="20" style="margin-bottom:0">
+    </div>
     <div id="builderGrid"></div>
     <div class="builder-actions">
       <button class="builder-cancel-btn" onclick="closeChordBuilder()">Cancel</button>
@@ -2252,6 +2255,8 @@ function openChordBuilder(songId, editIdx = null) {
 
   document.querySelector('.builder-title').textContent = editIdx !== null ? 'Edit Chord' : 'New Chord';
   document.getElementById('builderConfirmBtn').textContent = editIdx !== null ? 'Save Changes' : 'Add Chord';
+  document.getElementById('builderCustomName').value = '';
+  document.getElementById('builderNameOverride').style.display = 'none';
   renderBuilderGrid();
   updateBuilderChordName();
   document.getElementById('builderOverlay').classList.add('open');
@@ -2327,35 +2332,56 @@ function updateBuilderChordName() {
   const fullEl = document.getElementById('builderChordFull');
   const confirmBtn = document.getElementById('builderConfirmBtn');
 
+  const overrideWrap = document.getElementById('builderNameOverride');
+
   if (pitches.size < 2) {
     nameEl.textContent = '—';
     fullEl.textContent = 'Play at least 2 notes';
-    confirmBtn.disabled = false; // still allow saving unknown
+    overrideWrap.style.display = 'none';
+    confirmBtn.disabled = false;
     return;
   }
 
   const SUFFIX = { major:'', minor:'m', '7th':'7', maj7:'maj7', m7:'m7', dim:'dim',
     aug:'aug', sus:'sus4', add9:'add9', '6th':'6', '9th':'9', m9:'m9', m7b5:'m7b5', '7aug':'7aug' };
+  const ROOT_SEMI = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11};
 
-  let best = null;
+  let exact = null, partial = null;
+
   FINDER_ROOT_NAMES.forEach(root => {
-    const rootSemi = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11}[root];
+    const rootSemi = ROOT_SEMI[root];
     Object.entries(FINDER_TYPE_INTERVALS).forEach(([type, intervals]) => {
       const chordTones = new Set(intervals.map(i => (rootSemi + i) % 12));
       const selArr = [...pitches];
-      if (selArr.every(s => chordTones.has(s)) && chordTones.size === pitches.size) {
-        if (!best) best = { name: root + (SUFFIX[type]||''), full: root + ' ' + FINDER_TYPE_NAMES[type], type };
+      const allIn = selArr.every(s => chordTones.has(s));
+      const missing = [...chordTones].filter(s => !pitches.has(s));
+      const extra   = selArr.filter(s => !chordTones.has(s));
+      const name = root + (SUFFIX[type] || '');
+      const full = root + ' ' + FINDER_TYPE_NAMES[type];
+
+      if (!exact && allIn && chordTones.size === pitches.size) {
+        exact = { name, full };
+      } else if (!partial && allIn && missing.length === 1 && extra.length === 0) {
+        partial = { name, full, missing: FINDER_NOTE_NAMES[missing[0]] };
+      } else if (!partial && extra.length === 0 && missing.length === 0 && selArr.every(s => chordTones.has(s))) {
+        partial = { name, full };
       }
     });
   });
 
-  if (best) {
-    nameEl.textContent = best.name;
-    fullEl.textContent = best.full;
+  if (exact) {
+    nameEl.textContent = exact.name;
+    fullEl.textContent = exact.full;
+    overrideWrap.style.display = 'none';
+  } else if (partial) {
+    nameEl.textContent = partial.name;
+    fullEl.textContent = partial.full + (partial.missing ? ` (omit ${partial.missing})` : '');
+    overrideWrap.style.display = 'none';
   } else {
-    // partial / unknown
     nameEl.textContent = '?';
-    fullEl.textContent = 'Unknown voicing';
+    fullEl.textContent = 'Not recognized — enter a name below';
+    overrideWrap.style.display = 'block';
+    document.getElementById('builderCustomName').focus();
   }
   confirmBtn.disabled = false;
 }
@@ -2367,8 +2393,10 @@ function confirmBuilderChord() {
 
   const nameEl = document.getElementById('builderChordName');
   const fullEl = document.getElementById('builderChordFull');
-  const name = nameEl.textContent === '—' ? '?' : nameEl.textContent;
-  const full = fullEl.textContent === 'Play at least 2 notes' ? 'Unknown' : fullEl.textContent;
+  const customName = document.getElementById('builderCustomName').value.trim();
+  const autoName = nameEl.textContent;
+  const name = customName || (autoName === '—' || autoName === '?' ? '?' : autoName);
+  const full = customName ? customName : (fullEl.textContent.includes('Not recognized') ? 'Custom voicing' : fullEl.textContent);
 
   const chord = {
     name,
