@@ -7,93 +7,93 @@
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chordex</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --indigo:    #5b4fcf;
-  --indigo2:   #7b6fdf;
-  --indigo3:   #3d34a5;
-  --bg:        #f0f1f6;
+  --accent:    #4f46e5;
+  --accent2:   #3730a3;
+  --bg:        #f7f7f8;
   --surface:   #ffffff;
-  --border:    #e8e9f0;
-  --text:      #1a1b2e;
-  --muted:     #8b8fa8;
-  --active-pill: #ffffff;
-  --pill-bg:   rgba(255,255,255,0.18);
-  --radius:    18px;
-  --radius-sm: 12px;
-  --dot:       #1a1b2e;
-  --dot-acc:   #5b4fcf;
-  --string-c:  #c8cad8;
+  --border:    #e4e4e7;
+  --text:      #09090b;
+  --muted:     #71717a;
+  --radius:    12px;
+  --radius-sm: 8px;
+  --dot:       #09090b;
+  --dot-acc:   #4f46e5;
+  --string-c:  #d4d4d8;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body {
   background: var(--bg);
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   color: var(--text);
   min-height: 100vh;
 }
 
 /* ── HEADER ZONE ────────────────────────── */
 .header-zone {
-  background: linear-gradient(160deg, var(--indigo) 0%, var(--indigo2) 100%);
-  padding: 18px 20px 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px 0;
   position: sticky; top: 0; z-index: 50;
 }
 
 .header-top {
   display: flex; align-items: center;
-  justify-content: center; margin-bottom: 16px;
+  justify-content: space-between; margin-bottom: 14px;
 }
 .header-top h1 {
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.2rem; font-weight: 800;
-  color: white; letter-spacing: -0.01em;
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--text); letter-spacing: -0.03em;
 }
 
-/* Instrument switcher — pill style in header */
+/* Instrument switcher */
 .instrument-bar {
-  display: flex; gap: 4px;
-  background: rgba(0,0,0,0.15);
-  border-radius: 100px;
-  padding: 4px; margin-bottom: 14px;
+  display: flex; gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
 }
 .inst-btn {
-  flex: 1; padding: 8px 6px;
+  flex: 1; padding: 6px 10px;
   background: none; border: none;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.7rem; font-weight: 700;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  cursor: pointer; border-radius: 100px;
-  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+  cursor: pointer; border-radius: 6px;
+  transition: all 0.15s;
+  white-space: nowrap;
 }
 .inst-btn.active {
-  background: rgba(255,255,255,0.22);
-  color: white;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .inst-icon { font-size: 1rem; }
 
-/* Section tabs — sit at bottom of header zone */
+/* Section tabs */
 .tabs {
-  display: flex; gap: 0;
+  display: flex; gap: 0; margin-top: 4px;
 }
 .tab {
-  flex: 1; padding: 11px 4px 13px;
+  flex: 1; padding: 10px 4px 12px;
   background: none; border: none;
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.68rem; font-weight: 700;
-  letter-spacing: 0.05em; text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--muted);
   cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.18s;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
 }
 .tab.active {
-  color: white;
-  border-bottom: 3px solid white;
+  color: var(--text);
+  border-bottom: 2px solid var(--text);
 }
 
 /* ── PAGES ──────────────────────────────── */
@@ -101,121 +101,120 @@ body {
 .page.active { display: block; }
 
 /* ── SEARCH ──────────────────────────────── */
-.search-bar { margin-bottom: 14px; position: relative; }
+.search-bar { margin-bottom: 12px; position: relative; }
 .search-bar input {
   width: 100%;
-  padding: 13px 16px 13px 44px;
-  border: none;
+  padding: 10px 14px 10px 38px;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 0.95rem; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem; font-weight: 400;
   color: var(--text); outline: none;
-  box-shadow: 0 2px 12px rgba(91,79,207,0.08);
+  transition: border-color 0.15s;
 }
-.search-bar input::placeholder { color: var(--muted); font-weight: 400; }
+.search-bar input:focus { border-color: var(--accent); }
+.search-bar input::placeholder { color: var(--muted); }
 .search-icon {
-  position: absolute; left: 15px; top: 50%;
-  transform: translateY(-50%); color: var(--muted); font-size: 1.05rem;
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%); color: var(--muted); font-size: 0.95rem;
   pointer-events: none;
 }
 
 /* ── FILTER ──────────────────────────────── */
-.filter-section { margin-bottom: 16px; }
+.filter-section { margin-bottom: 14px; }
 .filter-row {
   display: flex; flex-wrap: wrap;
-  gap: 6px; align-items: center; margin-bottom: 8px;
+  gap: 5px; align-items: center; margin-bottom: 6px;
 }
 .filter-label {
-  font-size: 0.6rem; font-weight: 700;
-  letter-spacing: 0.09em; text-transform: uppercase;
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--muted); min-width: 30px;
 }
 .pill {
-  padding: 5px 13px; border-radius: 100px;
-  border: none;
+  padding: 4px 11px; border-radius: 100px;
+  border: 1px solid var(--border);
   background: var(--surface);
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.72rem; font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem; font-weight: 500;
   color: var(--muted); cursor: pointer;
-  transition: all 0.15s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: all 0.12s;
 }
-.pill:hover { color: var(--indigo); }
+.pill:hover { color: var(--text); border-color: #a1a1aa; }
 .pill.active {
-  background: var(--indigo);
+  background: var(--text);
+  border-color: var(--text);
   color: white;
-  box-shadow: 0 3px 10px rgba(91,79,207,0.3);
 }
 
 /* ── CHORD GRID ──────────────────────────── */
 .chord-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 .chord-card {
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 14px 12px 12px;
+  border: 1px solid var(--border);
+  padding: 14px 12px 10px;
   cursor: pointer;
-  transition: all 0.18s;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 .chord-card:hover {
-  box-shadow: 0 6px 24px rgba(91,79,207,0.15);
-  transform: translateY(-2px);
+  border-color: #a1a1aa;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
 }
 .chord-name {
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.3rem; font-weight: 900;
+  font-size: 1.2rem; font-weight: 700;
   color: var(--text); margin-bottom: 1px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 .chord-type {
-  font-size: 0.6rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
+  font-size: 0.58rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
   color: var(--muted); margin-bottom: 10px;
 }
 .diagram { width: 100%; aspect-ratio: 0.75; }
 .no-results {
   grid-column: 1/-1; text-align: center;
-  padding: 48px 20px; color: var(--muted); font-size: 0.9rem;
+  padding: 48px 20px; color: var(--muted); font-size: 0.875rem;
 }
 
 /* ── DETAIL SHEET ────────────────────────── */
 .detail-overlay {
   display: none; position: fixed; inset: 0;
-  background: rgba(26,27,46,0.45);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px);
   z-index: 100; align-items: flex-end; justify-content: center;
 }
 .detail-overlay.open { display: flex; }
 .detail-sheet {
   background: var(--surface);
-  border-radius: 28px 28px 0 0;
+  border-radius: 20px 20px 0 0;
+  border-top: 1px solid var(--border);
   padding: 20px 20px 32px;
   width: 100%; max-width: 500px;
   max-height: 88vh; overflow-y: auto;
-  animation: slideUp 0.28s cubic-bezier(0.32,0.72,0,1);
+  animation: slideUp 0.25s cubic-bezier(0.32,0.72,0,1);
 }
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
 .sheet-handle {
-  width: 38px; height: 4px;
+  width: 32px; height: 3px;
   background: var(--border); border-radius: 2px;
   margin: 0 auto 18px;
 }
 .sheet-chord-name {
-  font-family: 'Nunito', sans-serif;
-  font-size: 2.4rem; font-weight: 900;
-  color: var(--text); letter-spacing: -0.03em;
+  font-size: 2.2rem; font-weight: 700;
+  color: var(--text); letter-spacing: -0.04em;
 }
 .sheet-chord-full {
-  font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.09em;
+  font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--muted); margin-bottom: 20px; margin-top: 2px;
 }
 .sheet-diagram-wrap {
@@ -224,90 +223,89 @@ body {
 .sheet-diagram-wrap svg { width: 58%; }
 .finger-labels {
   display: flex; justify-content: center;
-  gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+  gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
 }
 .finger-label {
   background: var(--bg); border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
   padding: 6px 10px; text-align: center;
-  font-size: 0.62rem; font-weight: 700;
-  color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: 0.6rem; font-weight: 600;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
 }
 .finger-label span {
   display: block;
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.15rem; font-weight: 900;
-  color: var(--indigo); margin-bottom: 2px;
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--accent); margin-bottom: 2px;
 }
 
 .inversion-nav {
   display: flex; align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
-  background: var(--bg); border-radius: var(--radius-sm); padding: 8px 14px;
+  background: var(--bg); border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
 }
 .inv-label { text-align: center; flex: 1; }
 .inv-label-title {
-  font-size: 0.58rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+  font-size: 0.58rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
 }
 .inv-label-name {
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.95rem; font-weight: 800; color: var(--text); margin-top: 1px;
+  font-size: 0.9rem; font-weight: 700; color: var(--text); margin-top: 1px;
 }
 .inv-btn {
   background: none; border: none; cursor: pointer;
-  font-size: 1.4rem; color: var(--text);
-  padding: 4px 10px; border-radius: 8px;
-  transition: background 0.15s; line-height: 1;
+  font-size: 1.3rem; color: var(--text);
+  padding: 4px 10px; border-radius: 6px;
+  transition: background 0.12s; line-height: 1;
 }
 .inv-btn:hover { background: var(--border); }
 .inv-btn:disabled { color: var(--border); cursor: default; }
 
 .close-btn {
-  width: 100%; padding: 14px;
-  background: var(--indigo); color: white;
+  width: 100%; padding: 13px;
+  background: var(--text); color: white;
   border: none; border-radius: var(--radius);
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.82rem; font-weight: 800;
-  letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.01em;
   cursor: pointer; margin-top: 8px;
-  box-shadow: 0 4px 16px rgba(91,79,207,0.3);
-  transition: all 0.15s;
+  transition: opacity 0.15s;
 }
-.close-btn:hover { background: var(--indigo3); }
+.close-btn:hover { opacity: 0.85; }
 
 /* ── PROGRESSIONS ────────────────────────── */
 .section-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.1rem; font-weight: 900;
-  color: var(--text); margin-bottom: 14px; letter-spacing: -0.01em;
+  font-size: 1rem; font-weight: 700;
+  color: var(--text); margin-bottom: 14px; letter-spacing: -0.02em;
 }
 .prog-card {
   background: var(--surface); border-radius: var(--radius);
-  padding: 16px; margin-bottom: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  padding: 16px; margin-bottom: 10px;
 }
 .prog-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 3px;
+  font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 3px;
+  letter-spacing: -0.02em;
 }
 .prog-genre {
-  font-size: 0.62rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--indigo); margin-bottom: 10px;
+  font-size: 0.6rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--accent); margin-bottom: 10px;
 }
 .prog-chords {
   display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
 }
 .prog-chord-badge {
   background: var(--bg); border-radius: var(--radius-sm);
-  padding: 6px 12px;
-  font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
-  color: var(--text); cursor: pointer; transition: all 0.15s;
+  border: 1px solid var(--border);
+  padding: 5px 11px;
+  font-size: 0.9rem; font-weight: 600;
+  color: var(--text); cursor: pointer; transition: all 0.12s;
 }
 .prog-chord-badge:hover {
-  background: var(--indigo); color: white;
-  box-shadow: 0 3px 10px rgba(91,79,207,0.25);
+  background: var(--text); border-color: var(--text); color: white;
 }
 .arrow { color: var(--muted); font-size: 0.75rem; }
 .prog-desc { font-size: 0.78rem; color: var(--muted); margin-top: 10px; line-height: 1.55; }
@@ -315,38 +313,38 @@ body {
 /* ── SCALES ──────────────────────────────── */
 .scale-controls {
   background: var(--surface); border-radius: var(--radius);
-  padding: 14px; margin-bottom: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  padding: 14px; margin-bottom: 12px;
 }
 .scale-info {
-  font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 900;
-  color: var(--text); margin-bottom: 10px; min-height: 1.5em; letter-spacing: -0.01em;
+  font-size: 1rem; font-weight: 700;
+  color: var(--text); margin-bottom: 10px; min-height: 1.5em; letter-spacing: -0.02em;
 }
 .fretboard-wrap {
   background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border);
   padding: 12px 8px 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  margin-bottom: 12px; overflow-x: auto;
+  margin-bottom: 10px; overflow-x: auto;
 }
 .piano-wrap {
   background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border);
   padding: 14px 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .scale-notes-row {
   display: flex; flex-wrap: wrap;
-  gap: 6px; justify-content: center; margin-bottom: 14px;
+  gap: 5px; justify-content: center; margin-bottom: 12px;
 }
 .scale-note-badge {
   background: var(--surface);
-  border-radius: 100px; padding: 4px 13px;
-  font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 700;
-  color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border: 1px solid var(--border);
+  border-radius: 100px; padding: 4px 12px;
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text);
 }
 .scale-note-badge.root {
-  background: var(--indigo); color: white;
-  box-shadow: 0 3px 10px rgba(91,79,207,0.3);
+  background: var(--text); border-color: var(--text); color: white;
 }
 
 /* ── FINDER ──────────────────────────────── */
@@ -356,60 +354,58 @@ body {
 }
 .finder-fretboard-wrap {
   background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border);
   padding: 12px 8px 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  margin-bottom: 14px; overflow-x: auto;
+  margin-bottom: 12px; overflow-x: auto;
 }
 .finder-piano-wrap {
   background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border);
   padding: 14px 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 .finder-selected-notes {
-  display: flex; flex-wrap: wrap; gap: 6px;
+  display: flex; flex-wrap: wrap; gap: 5px;
   justify-content: center; margin-bottom: 12px; min-height: 32px;
 }
 .finder-note-tag {
-  background: var(--indigo); color: white;
-  border-radius: 100px; padding: 4px 13px;
-  font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700;
-  cursor: pointer; transition: background 0.15s;
-  box-shadow: 0 2px 8px rgba(91,79,207,0.25);
+  background: var(--text); color: white;
+  border-radius: 100px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.12s;
 }
-.finder-note-tag:hover { background: var(--indigo3); }
+.finder-note-tag:hover { opacity: 0.75; }
 .finder-clear-btn {
-  width: 100%; padding: 11px; background: var(--surface);
-  border: none; border-radius: var(--radius-sm);
-  font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--muted); cursor: pointer; margin-bottom: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  transition: all 0.15s;
+  width: 100%; padding: 10px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.02em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; margin-bottom: 12px;
+  transition: all 0.12s;
 }
-.finder-clear-btn:hover { color: var(--indigo); }
+.finder-clear-btn:hover { color: var(--text); border-color: #a1a1aa; }
 .finder-results-title {
-  font-size: 0.62rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.09em;
+  font-size: 0.6rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--muted); margin-bottom: 10px; text-align: center;
 }
-.finder-results-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.finder-results-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
 .finder-result-card {
   background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border);
   padding: 14px 12px; cursor: pointer;
-  transition: all 0.18s; text-align: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  transition: border-color 0.15s; text-align: center;
 }
 .finder-result-card:hover {
-  box-shadow: 0 6px 20px rgba(91,79,207,0.18);
-  transform: translateY(-2px);
+  border-color: #a1a1aa;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
 }
 .finder-result-name {
-  font-family: 'Nunito', sans-serif; font-size: 1.25rem; font-weight: 900; color: var(--text);
+  font-size: 1.2rem; font-weight: 700; color: var(--text); letter-spacing: -0.03em;
 }
 .finder-result-full {
-  font-size: 0.62rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.07em;
+  font-size: 0.6rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--muted); margin-top: 2px;
 }
 .finder-no-match {
@@ -426,13 +422,10 @@ body {
     padding: 20px 0 0;
   }
 
-  .header-top { max-width: 900px; margin: 0 auto 16px; padding: 0 32px; }
-  .header-top h1 { font-size: 1.5rem; }
+  .header-top { max-width: 900px; margin: 0 auto 14px; padding: 0 32px; }
+  .header-top h1 { font-size: 1.1rem; }
 
-  .instrument-bar {
-    max-width: 400px;
-    margin: 0 auto 14px;
-  }
+  .instrument-bar { margin-bottom: 0; }
 
   .tabs {
     max-width: 900px;
