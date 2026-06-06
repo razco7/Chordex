@@ -1861,17 +1861,36 @@ const FINDER_DISPLAY    = {'C#':'C#','D#':'D#','F#':'F#','G#':'G#','A#':'Bb'};
 
 // All chord type intervals for matching
 const FINDER_TYPE_INTERVALS = {
-  major:[0,4,7], minor:[0,3,7], '7th':[0,4,7,10], maj7:[0,4,7,11],
-  m7:[0,3,7,10], dim:[0,3,6], aug:[0,4,8], sus:[0,5,7],
-  add9:[0,4,7,2], '6th':[0,4,7,9], '9th':[0,4,7,10,2],
-  m9:[0,3,7,10,2], m7b5:[0,3,6,10], '7aug':[0,4,8,10],
+  // Triads
+  major:[0,4,7], minor:[0,3,7], dim:[0,3,6], aug:[0,4,8],
+  sus:[0,5,7], sus2:[0,2,7], '5':[0,7],
+  // 7ths
+  '7th':[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10],
+  m7b5:[0,3,6,10], '7aug':[0,4,8,10], dim7:[0,3,6,9],
+  mmaj7:[0,3,7,11], '7sus4':[0,5,7,10],
+  // 6ths
+  '6th':[0,4,7,9], m6:[0,3,7,9],
+  // Added tone
+  add9:[0,4,7,2], madd9:[0,3,7,2], add2:[0,2,4,7],
+  // Extended
+  '9th':[0,4,7,10,2], m9:[0,3,7,10,2], maj9:[0,4,7,11,2],
+  '6/9':[0,4,7,9,2], '7sus4b9':[0,5,7,10,1],
+  // Higher extensions
+  '11th':[0,4,7,10,2,5], m11:[0,3,7,10,2,5], maj11:[0,4,7,11,2,5],
+  '13th':[0,4,7,10,2,9],
 };
 
 const FINDER_TYPE_NAMES = {
-  major:'Major', minor:'Minor', '7th':'Dom 7', maj7:'Major 7',
-  m7:'Minor 7', dim:'Diminished', aug:'Augmented', sus:'Sus 4',
-  add9:'Add 9', '6th':'6th', '9th':'9th', m9:'Minor 9',
-  m7b5:'Half Dim', '7aug':'Dom 7 Aug',
+  major:'Major', minor:'Minor', dim:'Diminished', aug:'Augmented',
+  sus:'Sus 4', sus2:'Sus 2', '5':'Power',
+  '7th':'Dom 7', maj7:'Major 7', m7:'Minor 7',
+  m7b5:'Half Dim', '7aug':'Dom 7 Aug', dim7:'Dim 7',
+  mmaj7:'Minor Maj 7', '7sus4':'Dom 7 Sus 4',
+  '6th':'6th', m6:'Minor 6',
+  add9:'Add 9', madd9:'Minor Add 9', add2:'Add 2',
+  '9th':'9th', m9:'Minor 9', maj9:'Major 9',
+  '6/9':'6/9', '7sus4b9':'7 Sus 4 b9',
+  '11th':'11th', m11:'Minor 11', maj11:'Major 11', '13th':'13th',
 };
 
 const FINDER_ROOT_NAMES = ['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
@@ -2059,8 +2078,15 @@ function updateFinderResults() {
   const exact = [];
   const partial = []; // selected notes are subset of chord, missing 1 tone
 
-  const SUFFIX = {major:'',minor:'m','7th':'7',maj7:'maj7',m7:'m7',dim:'dim',aug:'aug',
-    sus:'sus4',add9:'add9','6th':'6','9th':'9',m9:'m9',m7b5:'m7b5','7aug':'7aug'};
+  const SUFFIX = {
+    major:'', minor:'m', dim:'dim', aug:'aug', sus:'sus4', sus2:'sus2', '5':'5',
+    '7th':'7', maj7:'maj7', m7:'m7', m7b5:'m7b5', '7aug':'7aug', dim7:'dim7',
+    mmaj7:'mMaj7', '7sus4':'7sus4',
+    '6th':'6', m6:'m6',
+    add9:'add9', madd9:'madd9', add2:'add2',
+    '9th':'9', m9:'m9', maj9:'maj9', '6/9':'6/9', '7sus4b9':'7sus4b9',
+    '11th':'11', m11:'m11', maj11:'maj11', '13th':'13',
+  };
 
   FINDER_ROOT_NAMES.forEach(root => {
     const rootSemi = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11}[root];
@@ -2342,8 +2368,15 @@ function updateBuilderChordName() {
     return;
   }
 
-  const SUFFIX = { major:'', minor:'m', '7th':'7', maj7:'maj7', m7:'m7', dim:'dim',
-    aug:'aug', sus:'sus4', add9:'add9', '6th':'6', '9th':'9', m9:'m9', m7b5:'m7b5', '7aug':'7aug' };
+  const SUFFIX = {
+    major:'', minor:'m', dim:'dim', aug:'aug', sus:'sus4', sus2:'sus2', '5':'5',
+    '7th':'7', maj7:'maj7', m7:'m7', m7b5:'m7b5', '7aug':'7aug', dim7:'dim7',
+    mmaj7:'mMaj7', '7sus4':'7sus4',
+    '6th':'6', m6:'m6',
+    add9:'add9', madd9:'madd9', add2:'add2',
+    '9th':'9', m9:'m9', maj9:'maj9', '6/9':'6/9', '7sus4b9':'7sus4b9',
+    '11th':'11', m11:'m11', maj11:'maj11', '13th':'13',
+  };
   const ROOT_SEMI = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11};
 
   let exact = null, partial = null;
