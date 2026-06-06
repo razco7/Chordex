@@ -413,6 +413,186 @@ body {
   padding: 24px; font-size: 0.88rem; line-height: 1.6;
 }
 
+/* ── SONGS ──────────────────────────────── */
+.songs-list-header {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 14px;
+}
+.song-new-btn {
+  padding: 7px 14px;
+  background: var(--text); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.song-new-btn:hover { opacity: 0.8; }
+.songs-empty, .song-empty {
+  text-align: center; color: var(--muted);
+  padding: 48px 20px; font-size: 0.875rem; line-height: 1.6;
+}
+.song-list-item {
+  display: flex; align-items: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  margin-bottom: 8px; cursor: pointer;
+  transition: border-color 0.15s;
+}
+.song-list-item:hover { border-color: #a1a1aa; }
+.song-list-name { font-size: 0.95rem; font-weight: 600; flex: 1; letter-spacing: -0.02em; }
+.song-list-meta { font-size: 0.75rem; color: var(--muted); margin-right: 10px; }
+.song-list-arrow { color: var(--muted); font-size: 1.1rem; }
+
+.song-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+}
+.song-back-btn {
+  background: none; border: none; font-family: 'Inter', sans-serif;
+  font-size: 0.82rem; font-weight: 600; color: var(--accent);
+  cursor: pointer; padding: 0; flex-shrink: 0;
+}
+.song-header-name {
+  flex: 1; font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
+  text-align: center;
+}
+.song-delete-btn {
+  background: none; border: none; font-family: 'Inter', sans-serif;
+  font-size: 0.78rem; font-weight: 500; color: var(--muted);
+  cursor: pointer; padding: 0; flex-shrink: 0;
+}
+.song-delete-btn:hover { color: #e11d48; }
+
+.song-chord-sequence {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+}
+.song-chord-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 10px 10px;
+  position: relative; width: calc(50% - 5px);
+  transition: border-color 0.15s;
+}
+.song-chord-remove {
+  position: absolute; top: 6px; right: 8px;
+  font-size: 1rem; color: var(--muted); cursor: pointer;
+  line-height: 1; padding: 2px 4px; border-radius: 4px;
+  transition: color 0.12s;
+}
+.song-chord-remove:hover { color: #e11d48; }
+.song-add-chord-btn {
+  width: 100%; padding: 13px;
+  background: var(--surface); border: 1px dashed #a1a1aa;
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.song-add-chord-btn:hover { border-color: var(--text); color: var(--text); background: var(--bg); }
+
+/* ── CHORD BUILDER OVERLAY ───────────────── */
+.builder-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
+  z-index: 110; align-items: flex-end; justify-content: center;
+}
+.builder-overlay.open { display: flex; }
+.builder-sheet {
+  background: var(--surface);
+  border-radius: 20px 20px 0 0;
+  border-top: 1px solid var(--border);
+  padding: 20px 20px 32px;
+  width: 100%; max-width: 500px;
+  max-height: 92vh; overflow-y: auto;
+  animation: slideUp 0.25s cubic-bezier(0.32,0.72,0,1);
+}
+.builder-handle {
+  width: 32px; height: 3px;
+  background: var(--border); border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.builder-title {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  text-align: center;
+}
+.builder-chord-name {
+  font-size: 1.6rem; font-weight: 700; letter-spacing: -0.04em;
+  text-align: center; min-height: 2rem; margin-bottom: 4px;
+  color: var(--text);
+}
+.builder-chord-full {
+  font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted); text-align: center;
+  margin-bottom: 16px; min-height: 1em;
+}
+.builder-grid {
+  display: grid;
+  gap: 0;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.builder-row {
+  display: flex; align-items: stretch; border-bottom: 1px solid var(--border);
+}
+.builder-row:last-child { border-bottom: none; }
+.builder-row-header {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; flex-shrink: 0;
+  background: var(--bg); border-right: 1px solid var(--border);
+  font-size: 0.72rem; font-weight: 600; color: var(--muted);
+}
+.builder-row-header.muted { color: #e11d48; }
+.builder-cells { display: flex; flex: 1; }
+.builder-cell {
+  flex: 1; min-height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-right: 1px solid var(--border);
+  font-size: 0.7rem; font-weight: 600; color: var(--muted);
+  transition: background 0.1s;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.builder-cell:last-child { border-right: none; }
+.builder-cell:hover { background: var(--bg); }
+.builder-cell.selected {
+  background: var(--text); color: white;
+}
+.builder-cell.open-cell { font-size: 0.9rem; }
+.builder-cell.mute-cell { font-size: 0.85rem; color: #e11d48; }
+.builder-cell.mute-cell.selected { background: #fee2e2; color: #e11d48; }
+.builder-col-headers {
+  display: flex; margin-bottom: 0;
+}
+.builder-col-header-spacer { width: 36px; flex-shrink: 0; }
+.builder-col-header-cells { display: flex; flex: 1; }
+.builder-col-header-cell {
+  flex: 1; text-align: center;
+  font-size: 0.6rem; font-weight: 600; letter-spacing: 0.05em;
+  color: var(--muted); padding: 6px 0;
+  border-right: 1px solid var(--border);
+}
+.builder-col-header-cell:last-child { border-right: none; }
+
+.builder-actions {
+  display: flex; gap: 8px;
+}
+.builder-cancel-btn {
+  flex: 1; padding: 13px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 600;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.builder-cancel-btn:hover { border-color: #a1a1aa; color: var(--text); }
+.builder-confirm-btn {
+  flex: 2; padding: 13px;
+  background: var(--text); color: white;
+  border: none; border-radius: var(--radius);
+  font-family: 'Inter', sans-serif; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.builder-confirm-btn:hover { opacity: 0.85; }
+.builder-confirm-btn:disabled { opacity: 0.35; cursor: default; }
+
 /* ── RESPONSIVE / DESKTOP ───────────────── */
 @media (min-width: 768px) {
   body { display: flex; flex-direction: column; align-items: center; }
@@ -506,6 +686,7 @@ body {
     <button class="tab" onclick="showPage('scales', this)">Scales</button>
     <button class="tab" onclick="showPage('progressions', this)">Progressions</button>
     <button class="tab" onclick="showPage('finder', this); openFinder()">Finder</button>
+    <button class="tab" onclick="showPage('songs', this); renderSongsPage()">Songs</button>
   </div>
 </div>
 
@@ -584,6 +765,24 @@ body {
   <div class="finder-selected-notes" id="finderSelectedNotes"></div>
   <button class="finder-clear-btn" onclick="clearFinderNotes()">Clear All Notes</button>
   <div class="finder-results" id="finderResults"></div>
+</div>
+
+<!-- SONGS PAGE -->
+<div id="songs" class="page"></div>
+
+<!-- CHORD BUILDER OVERLAY -->
+<div class="builder-overlay" id="builderOverlay">
+  <div class="builder-sheet">
+    <div class="builder-handle"></div>
+    <div class="builder-title">New Chord</div>
+    <div class="builder-chord-name" id="builderChordName">—</div>
+    <div class="builder-chord-full" id="builderChordFull"></div>
+    <div id="builderGrid"></div>
+    <div class="builder-actions">
+      <button class="builder-cancel-btn" onclick="closeChordBuilder()">Cancel</button>
+      <button class="builder-confirm-btn" id="builderConfirmBtn" onclick="confirmBuilderChord()">Add Chord</button>
+    </div>
+  </div>
 </div>
 
 <!-- DETAIL OVERLAY -->
@@ -1867,6 +2066,253 @@ function updateFinderResults() {
   el.innerHTML = html;
 }
 
+
+
+// ─── SONGS ───────────────────────────────────────────────────────────
+
+let currentSongId = null;
+let builderSongId = null;
+let builderFrets  = []; // per string: -1=mute, 0=open, 1-5=fret
+
+const BUILDER_FRET_COUNT = 5;
+
+function getSongs() {
+  try { return JSON.parse(localStorage.getItem('chordex_songs_' + currentInstrument)) || []; }
+  catch { return []; }
+}
+
+function saveSongs(songs) {
+  localStorage.setItem('chordex_songs_' + currentInstrument, JSON.stringify(songs));
+}
+
+function createSong() {
+  const name = prompt('Song name:', 'Untitled Song');
+  if (!name || !name.trim()) return;
+  const songs = getSongs();
+  const id = Date.now().toString();
+  songs.push({ id, name: name.trim(), chords: [] });
+  saveSongs(songs);
+  openSong(id);
+}
+
+function openSong(id) {
+  currentSongId = id;
+  renderSongsPage();
+}
+
+function backToSongsList() {
+  currentSongId = null;
+  renderSongsPage();
+}
+
+function deleteSong(id) {
+  if (!confirm('Delete this song?')) return;
+  saveSongs(getSongs().filter(s => s.id !== id));
+  currentSongId = null;
+  renderSongsPage();
+}
+
+function removeSongChord(songId, idx) {
+  const songs = getSongs();
+  const song = songs.find(s => s.id === songId);
+  if (!song) return;
+  song.chords.splice(idx, 1);
+  saveSongs(songs);
+  renderSongsPage();
+}
+
+function renderSongsPage() {
+  const el = document.getElementById('songs');
+  if (!el) return;
+
+  if (currentSongId) {
+    const songs = getSongs();
+    const song  = songs.find(s => s.id === currentSongId);
+    if (!song) { currentSongId = null; renderSongsPage(); return; }
+
+    const cardsHtml = song.chords.length === 0
+      ? '<div class="song-empty">No chords yet — tap "Add Chord" to start</div>'
+      : song.chords.map((c, i) => {
+          const stringCount = currentInstrument === 'guitar' ? 6 : 4;
+          const diagram = currentInstrument === 'piano'
+            ? buildPianoSVG(c, 90, 50, true)
+            : `<svg class="diagram" viewBox="0 0 100 120">${buildFretDiagram(c, 100, 120, 12, stringCount)}</svg>`;
+          return `
+            <div class="song-chord-card">
+              <div class="song-chord-remove" onclick="removeSongChord('${song.id}',${i})">×</div>
+              <div class="chord-name">${c.name}</div>
+              <div class="chord-type">${c.full}</div>
+              ${diagram}
+            </div>`;
+        }).join('');
+
+    el.innerHTML = `
+      <div class="song-header">
+        <button class="song-back-btn" onclick="backToSongsList()">← Songs</button>
+        <div class="song-header-name">${song.name}</div>
+        <button class="song-delete-btn" onclick="deleteSong('${song.id}')">Delete</button>
+      </div>
+      <div class="song-chord-sequence">${cardsHtml}</div>
+      <button class="song-add-chord-btn" onclick="openChordBuilder('${song.id}')">+ Add Chord</button>`;
+  } else {
+    const songs = getSongs();
+    const listHtml = songs.length === 0
+      ? '<div class="songs-empty">No songs yet — tap "+ New Song" to create one</div>'
+      : songs.map(s => `
+          <div class="song-list-item" onclick="openSong('${s.id}')">
+            <div class="song-list-name">${s.name}</div>
+            <div class="song-list-meta">${s.chords.length} chord${s.chords.length !== 1 ? 's' : ''}</div>
+            <div class="song-list-arrow">›</div>
+          </div>`).join('');
+
+    el.innerHTML = `
+      <div class="songs-list-header">
+        <div class="section-title">My Songs</div>
+        <button class="song-new-btn" onclick="createSong()">+ New Song</button>
+      </div>
+      ${listHtml}`;
+  }
+}
+
+// ─── CHORD BUILDER ───────────────────────────────────────────────────
+
+function openChordBuilder(songId) {
+  builderSongId = songId;
+  const stringCount = currentInstrument === 'guitar' ? 6 : 4;
+  builderFrets = new Array(stringCount).fill(0); // all open by default
+  renderBuilderGrid();
+  updateBuilderChordName();
+  document.getElementById('builderOverlay').classList.add('open');
+}
+
+function closeChordBuilder() {
+  document.getElementById('builderOverlay').classList.remove('open');
+}
+
+function builderSetFret(stringIdx, fret) {
+  // Tap current selection → go to open; tap mute on already-muted → open
+  if (builderFrets[stringIdx] === fret) {
+    builderFrets[stringIdx] = fret === 0 ? -1 : 0; // toggle: open↔mute for ×, else → open
+  } else {
+    builderFrets[stringIdx] = fret;
+  }
+  renderBuilderGrid();
+  updateBuilderChordName();
+}
+
+function renderBuilderGrid() {
+  const strNames = currentInstrument === 'guitar' ? GTR_NAMES
+                 : currentInstrument === 'bass'   ? BASS_NAMES
+                 : ['G','C','E','A'];
+
+  const colLabels = ['×','O','1','2','3','4','5'];
+
+  let html = `
+    <div style="display:flex;margin-bottom:0">
+      <div style="width:36px;flex-shrink:0"></div>
+      <div style="display:flex;flex:1;border:1px solid var(--border);border-bottom:none;border-radius:${getComputedStyle(document.documentElement).getPropertyValue('--radius').trim()} ${getComputedStyle(document.documentElement).getPropertyValue('--radius').trim()} 0 0;overflow:hidden">
+        ${colLabels.map(l => `<div class="builder-col-header-cell">${l}</div>`).join('')}
+      </div>
+    </div>
+    <div class="builder-grid">`;
+
+  strNames.forEach((name, si) => {
+    const cur = builderFrets[si];
+    const isMuted = cur === -1;
+    html += `<div class="builder-row">
+      <div class="builder-row-header${isMuted ? ' muted' : ''}">${name}</div>
+      <div class="builder-cells">`;
+    // mute cell
+    html += `<div class="builder-cell mute-cell${cur === -1 ? ' selected' : ''}" onclick="builderSetFret(${si},-1)">×</div>`;
+    // open cell
+    html += `<div class="builder-cell open-cell${cur === 0 ? ' selected' : ''}" onclick="builderSetFret(${si},0)">○</div>`;
+    // frets 1-5
+    for (let f = 1; f <= BUILDER_FRET_COUNT; f++) {
+      html += `<div class="builder-cell${cur === f ? ' selected' : ''}" onclick="builderSetFret(${si},${f})"></div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('builderGrid').innerHTML = html;
+}
+
+function updateBuilderChordName() {
+  const openPitches = currentInstrument === 'guitar' ? GTR_OPEN_PITCHES
+                    : currentInstrument === 'bass'   ? BASS_OPEN_PITCHES
+                    : UKE_OPEN;
+
+  const pitches = new Set();
+  builderFrets.forEach((f, s) => {
+    if (f >= 0) pitches.add((openPitches[s] + f) % 12);
+  });
+
+  const nameEl = document.getElementById('builderChordName');
+  const fullEl = document.getElementById('builderChordFull');
+  const confirmBtn = document.getElementById('builderConfirmBtn');
+
+  if (pitches.size < 2) {
+    nameEl.textContent = '—';
+    fullEl.textContent = 'Play at least 2 notes';
+    confirmBtn.disabled = false; // still allow saving unknown
+    return;
+  }
+
+  const SUFFIX = { major:'', minor:'m', '7th':'7', maj7:'maj7', m7:'m7', dim:'dim',
+    aug:'aug', sus:'sus4', add9:'add9', '6th':'6', '9th':'9', m9:'m9', m7b5:'m7b5', '7aug':'7aug' };
+
+  let best = null;
+  FINDER_ROOT_NAMES.forEach(root => {
+    const rootSemi = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11}[root];
+    Object.entries(FINDER_TYPE_INTERVALS).forEach(([type, intervals]) => {
+      const chordTones = new Set(intervals.map(i => (rootSemi + i) % 12));
+      const selArr = [...pitches];
+      if (selArr.every(s => chordTones.has(s)) && chordTones.size === pitches.size) {
+        if (!best) best = { name: root + (SUFFIX[type]||''), full: root + ' ' + FINDER_TYPE_NAMES[type], type };
+      }
+    });
+  });
+
+  if (best) {
+    nameEl.textContent = best.name;
+    fullEl.textContent = best.full;
+  } else {
+    // partial / unknown
+    nameEl.textContent = '?';
+    fullEl.textContent = 'Unknown voicing';
+  }
+  confirmBtn.disabled = false;
+}
+
+function confirmBuilderChord() {
+  const songs = getSongs();
+  const song  = songs.find(s => s.id === builderSongId);
+  if (!song) return;
+
+  const nameEl = document.getElementById('builderChordName');
+  const fullEl = document.getElementById('builderChordFull');
+  const name = nameEl.textContent === '—' ? '?' : nameEl.textContent;
+  const full = fullEl.textContent === 'Play at least 2 notes' ? 'Unknown' : fullEl.textContent;
+
+  const chord = {
+    name,
+    full,
+    frets: [...builderFrets],
+    fingers: builderFrets.map(f => f < 0 ? 'x' : f === 0 ? 'O' : String(f)),
+  };
+
+  song.chords.push(chord);
+  saveSongs(songs);
+  closeChordBuilder();
+  renderSongsPage();
+}
+
+// Re-render songs page when switching instruments
+const _siOrig = setInstrument;
+window.setInstrument = function(inst, el) {
+  _siOrig(inst, el);
+  if (document.getElementById('songs').classList.contains('active')) renderSongsPage();
+};
 
 </script>
 </body>
