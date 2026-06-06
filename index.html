@@ -470,13 +470,19 @@ body {
   position: relative; width: calc(50% - 5px);
   transition: border-color 0.15s;
 }
-.song-chord-remove {
-  position: absolute; top: 6px; right: 8px;
-  font-size: 1rem; color: var(--muted); cursor: pointer;
-  line-height: 1; padding: 2px 4px; border-radius: 4px;
-  transition: color 0.12s;
+.song-chord-actions {
+  position: absolute; top: 6px; right: 6px;
+  display: flex; gap: 2px;
 }
-.song-chord-remove:hover { color: #e11d48; }
+.song-chord-remove, .song-chord-edit {
+  font-size: 0.75rem; color: var(--muted); cursor: pointer;
+  line-height: 1; padding: 3px 5px; border-radius: 4px;
+  border: none; background: none;
+  font-family: 'Inter', sans-serif; font-weight: 600;
+  transition: color 0.12s, background 0.12s;
+}
+.song-chord-edit:hover { color: var(--accent); background: var(--bg); }
+.song-chord-remove:hover { color: #e11d48; background: #fee2e2; }
 .song-add-chord-btn {
   width: 100%; padding: 13px;
   background: var(--surface); border: 1px dashed #a1a1aa;
@@ -2110,9 +2116,10 @@ function updateFinderResults() {
 
 // ─── SONGS ───────────────────────────────────────────────────────────
 
-let currentSongId = null;
-let builderSongId = null;
-let builderFrets  = []; // per string: -1=mute, 0=open, 1-5=fret
+let currentSongId   = null;
+let builderSongId   = null;
+let builderEditIdx  = null; // null = new chord, number = editing existing
+let builderFrets    = []; // per string: -1=mute, 0=open, 1-5=fret
 
 const BUILDER_FRET_COUNT = 5;
 
@@ -2191,7 +2198,10 @@ function renderSongsPage() {
             : `<svg class="diagram" viewBox="0 0 100 120">${buildFretDiagram(c, 100, 120, 12, stringCount)}</svg>`;
           return `
             <div class="song-chord-card">
-              <div class="song-chord-remove" onclick="removeSongChord('${song.id}',${i})">×</div>
+              <div class="song-chord-actions">
+                <button class="song-chord-edit" onclick="editSongChord('${song.id}',${i})">Edit</button>
+                <button class="song-chord-remove" onclick="removeSongChord('${song.id}',${i})">×</button>
+              </div>
               <div class="chord-name">${c.name}</div>
               <div class="chord-type">${c.full}</div>
               ${diagram}
@@ -2228,13 +2238,27 @@ function renderSongsPage() {
 
 // ─── CHORD BUILDER ───────────────────────────────────────────────────
 
-function openChordBuilder(songId) {
-  builderSongId = songId;
+function openChordBuilder(songId, editIdx = null) {
+  builderSongId  = songId;
+  builderEditIdx = editIdx;
   const stringCount = currentInstrument === 'guitar' ? 6 : 4;
-  builderFrets = new Array(stringCount).fill(0); // all open by default
+
+  if (editIdx !== null) {
+    const song = getSongs().find(s => s.id === songId);
+    builderFrets = song ? [...song.chords[editIdx].frets] : new Array(stringCount).fill(0);
+  } else {
+    builderFrets = new Array(stringCount).fill(0);
+  }
+
+  document.querySelector('.builder-title').textContent = editIdx !== null ? 'Edit Chord' : 'New Chord';
+  document.getElementById('builderConfirmBtn').textContent = editIdx !== null ? 'Save Changes' : 'Add Chord';
   renderBuilderGrid();
   updateBuilderChordName();
   document.getElementById('builderOverlay').classList.add('open');
+}
+
+function editSongChord(songId, idx) {
+  openChordBuilder(songId, idx);
 }
 
 function closeChordBuilder() {
@@ -2353,7 +2377,11 @@ function confirmBuilderChord() {
     fingers: builderFrets.map(f => f < 0 ? 'x' : f === 0 ? 'O' : String(f)),
   };
 
-  song.chords.push(chord);
+  if (builderEditIdx !== null) {
+    song.chords[builderEditIdx] = chord;
+  } else {
+    song.chords.push(chord);
+  }
   saveSongs(songs);
   closeChordBuilder();
   renderSongsPage();
