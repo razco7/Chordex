@@ -1157,7 +1157,7 @@ function buildFretDiagram(chord, W, H, fontSize, stringCount) {
   if (startFret === 1) {
     svg += `<rect x="${ml - r}" y="${mt - 4}" width="${(stringCount-1)*sw + r*2}" height="5" rx="2" fill="#1a1b2e"/>`;
   } else {
-    svg += `<text x="${ml - 4}" y="${mt + fh*0.6}" text-anchor="end" font-size="8" fill="#8b8fa8" font-family="Lato">${startFret}fr</text>`;
+    svg += `<text x="${ml - 4}" y="${mt + fh*0.6}" text-anchor="end" font-size="8" fill="#8b8fa8" font-family="Inter, system-ui, sans-serif">${startFret}fr</text>`;
   }
 
   // Fret lines
@@ -1189,7 +1189,7 @@ function buildFretDiagram(chord, W, H, fontSize, stringCount) {
   // String names
   const names = currentInstrument === 'guitar' ? GTR_NAMES : currentInstrument === 'bass' ? BASS_NAMES : ['G','C','E','A'];
   names.forEach((n, s) => {
-    svg += `<text x="${ml+s*sw}" y="${mt+frets*fh+11}" text-anchor="middle" font-size="7" fill="#8b8fa8" font-family="Lato">${n}</text>`;
+    svg += `<text x="${ml+s*sw}" y="${mt+frets*fh+11}" text-anchor="middle" font-size="7" fill="#8b8fa8" font-family="Inter, system-ui, sans-serif">${n}</text>`;
   });
 
   return svg;
@@ -1231,7 +1231,7 @@ function buildPianoSVG(chord, W, H, isPreview) {
     const label = SCALE_DISPLAY[noteName] || noteName;
     svg += `<rect x="${i*ww+0.5}" y="0.5" width="${ww-1}" height="${wh-1}" rx="3" fill="${fill}" stroke="#c8cad8" stroke-width="1"/>`;
     if (isActive || isPreview === false) {
-      svg += `<text x="${i*ww+ww/2}" y="${wh-5}" text-anchor="middle" font-size="${ww*0.38}" fill="${textFill}" font-family="Lato" font-weight="700">${isActive ? label : ''}</text>`;
+      svg += `<text x="${i*ww+ww/2}" y="${wh-5}" text-anchor="middle" font-size="${ww*0.38}" fill="${textFill}" font-family="Inter, system-ui, sans-serif" font-weight="700">${isActive ? label : ''}</text>`;
     }
   });
 
@@ -1248,7 +1248,7 @@ function buildPianoSVG(chord, W, H, isPreview) {
     if (isActive) {
       const noteName = SCALE_NOTES[noteSemi];
       const label = SCALE_DISPLAY[noteName] || noteName;
-      svg += `<text x="${x+bw/2}" y="${bh-4}" text-anchor="middle" font-size="${bw*0.42}" fill="white" font-family="Lato" font-weight="700">${label}</text>`;
+      svg += `<text x="${x+bw/2}" y="${bh-4}" text-anchor="middle" font-size="${bw*0.42}" fill="white" font-family="Inter, system-ui, sans-serif" font-weight="700">${label}</text>`;
     }
   });
 
@@ -1515,7 +1515,7 @@ function buildPianoScaleSVG(scaleNotes, W, H) {
     const textFill = (isRoot||isActive) ? 'white' : '#ccc';
     const label = SCALE_DISPLAY[SCALE_NOTES[noteSemi]] || SCALE_NOTES[noteSemi];
     svg += `<rect x="${i*ww+0.5}" y="0.5" width="${ww-1}" height="${wh-1}" rx="3" fill="${fill}" stroke="#c8cad8" stroke-width="1"/>`;
-    svg += `<text x="${i*ww+ww/2}" y="${wh-5}" text-anchor="middle" font-size="${ww*0.38}" fill="${textFill}" font-family="Lato" font-weight="700">${isActive?label:''}</text>`;
+    svg += `<text x="${i*ww+ww/2}" y="${wh-5}" text-anchor="middle" font-size="${ww*0.38}" fill="${textFill}" font-family="Inter, system-ui, sans-serif" font-weight="700">${isActive?label:''}</text>`;
   });
 
   const blackSlots = [0,1,3,4,5];
@@ -1528,7 +1528,7 @@ function buildPianoScaleSVG(scaleNotes, W, H) {
     const x = (slot+1)*ww - bw/2;
     const label = SCALE_DISPLAY[SCALE_NOTES[noteSemi]] || SCALE_NOTES[noteSemi];
     svg += `<rect x="${x}" y="0.5" width="${bw}" height="${bh}" rx="2" fill="${fill}" stroke="${isActive?'#5b4fcf':'#0f1020'}" stroke-width="0.5"/>`;
-    if (isActive) svg += `<text x="${x+bw/2}" y="${bh-4}" text-anchor="middle" font-size="${bw*0.42}" fill="white" font-family="Lato" font-weight="700">${label}</text>`;
+    if (isActive) svg += `<text x="${x+bw/2}" y="${bh-4}" text-anchor="middle" font-size="${bw*0.42}" fill="white" font-family="Inter, system-ui, sans-serif" font-weight="700">${label}</text>`;
   });
 
   svg += '</svg>';
@@ -1728,14 +1728,14 @@ function buildFinderFretboard(openPitches, strNames, H) {
     const x = ml + f * fpf;
     out += '<line x1="' + x + '" y1="' + mt + '" x2="' + x + '" y2="' + (mt+fh*(openPitches.length-1)) + '" stroke="#c8cad8" stroke-width="1" opacity="0.6"/>';
     if ([3,5,7,10,12].includes(f)) {
-      out += '<text x="' + (ml+(f-0.5)*fpf) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#8b8fa8" font-family="Lato">' + f + '</text>';
+      out += '<text x="' + (ml+(f-0.5)*fpf) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#8b8fa8" font-family="Inter, system-ui, sans-serif">' + f + '</text>';
     }
   }
 
   openPitches.forEach((open, si) => {
     const y = mt + si * fh;
     out += '<line x1="' + ml + '" y1="' + y + '" x2="' + (ml+fw) + '" y2="' + y + '" stroke="#c8cad8" stroke-width="1.5"/>';
-    out += '<text x="' + (ml-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="9" fill="#8b8fa8" font-family="Lato">' + strNames[si] + '</text>';
+    out += '<text x="' + (ml-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="9" fill="#8b8fa8" font-family="Inter, system-ui, sans-serif">' + strNames[si] + '</text>';
 
     // Open string (fret 0)
     const openPitch = open % 12;
@@ -1743,7 +1743,7 @@ function buildFinderFretboard(openPitches, strNames, H) {
     const openSel   = finderTappedPositions.has(openKey);
     const openLabel = FINDER_DISPLAY[FINDER_NOTE_NAMES[openPitch]] || FINDER_NOTE_NAMES[openPitch];
     out += '<circle cx="' + (ml-18) + '" cy="' + y + '" r="' + (r-1) + '" fill="' + (openSel?'#5b4fcf':'white') + '" stroke="' + (openSel?'#5b4fcf':'#8b8fa8') + '" stroke-width="1.5" style="cursor:pointer" onclick="tapFinderPosition(' + si + ',0,' + openPitch + ')"/>';
-    out += '<text x="' + (ml-18) + '" y="' + (y+3.5) + '" text-anchor="middle" font-size="7" fill="' + (openSel?'white':'#8b8fa8') + '" font-family="Lato" font-weight="700" style="pointer-events:none">' + openLabel + '</text>';
+    out += '<text x="' + (ml-18) + '" y="' + (y+3.5) + '" text-anchor="middle" font-size="7" fill="' + (openSel?'white':'#8b8fa8') + '" font-family="Inter, system-ui, sans-serif" font-weight="700" style="pointer-events:none">' + openLabel + '</text>';
 
     // Fretted positions
     for (let f = 1; f <= FRET_COUNT; f++) {
@@ -1754,7 +1754,7 @@ function buildFinderFretboard(openPitches, strNames, H) {
       const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[pitch]] || FINDER_NOTE_NAMES[pitch];
       if (sel) {
         out += '<circle cx="' + cx + '" cy="' + y + '" r="' + r + '" fill="#5b4fcf" style="cursor:pointer" onclick="tapFinderPosition(' + si + ',' + f + ',' + pitch + ')"/>';
-        out += '<text x="' + cx + '" y="' + (y+3.5) + '" text-anchor="middle" font-size="7.5" fill="white" font-family="Lato" font-weight="700" style="pointer-events:none">' + label + '</text>';
+        out += '<text x="' + cx + '" y="' + (y+3.5) + '" text-anchor="middle" font-size="7.5" fill="white" font-family="Inter, system-ui, sans-serif" font-weight="700" style="pointer-events:none">' + label + '</text>';
       } else {
         out += '<circle cx="' + cx + '" cy="' + y + '" r="' + r + '" fill="transparent" stroke="transparent" style="cursor:pointer" onclick="tapFinderPosition(' + si + ',' + f + ',' + pitch + ')" onmouseover="this.setAttribute(&quot;stroke&quot;,&quot;#c8cad8&quot;)" onmouseout="this.setAttribute(&quot;stroke&quot;,&quot;transparent&quot;)"/>';
       }
@@ -1781,7 +1781,7 @@ function buildFinderPianoSVG() {
     const fill = sel ? '#5b4fcf' : 'white';
     const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[noteSemi]] || FINDER_NOTE_NAMES[noteSemi];
     svg += '<rect x="' + (i*ww+0.5) + '" y="0.5" width="' + (ww-1) + '" height="' + (wh-1) + '" rx="3" fill="' + fill + '" stroke="#c8cad8" stroke-width="1" style="cursor:pointer" onclick="toggleFinderNote(' + noteSemi + ')"/>';
-    svg += '<text x="' + (i*ww+ww/2) + '" y="' + (wh-6) + '" text-anchor="middle" font-size="' + (ww*0.36) + '" fill="' + (sel?'white':'#8b8fa8') + '" font-family="Lato" font-weight="700" style="pointer-events:none">' + label + '</text>';
+    svg += '<text x="' + (i*ww+ww/2) + '" y="' + (wh-6) + '" text-anchor="middle" font-size="' + (ww*0.36) + '" fill="' + (sel?'white':'#8b8fa8') + '" font-family="Inter, system-ui, sans-serif" font-weight="700" style="pointer-events:none">' + label + '</text>';
   });
 
   const blackSlots = [0,1,3,4,5];
@@ -1793,7 +1793,7 @@ function buildFinderPianoSVG() {
     const x    = (slot+1)*ww - bw/2;
     const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[noteSemi]] || FINDER_NOTE_NAMES[noteSemi];
     svg += '<rect x="' + x + '" y="0.5" width="' + bw + '" height="' + (bh-0.5) + '" rx="2" fill="' + fill + '" style="cursor:pointer" onclick="toggleFinderNote(' + noteSemi + ')"/>';
-    if (sel) svg += '<text x="' + (x+bw/2) + '" y="' + (bh-5) + '" text-anchor="middle" font-size="' + (bw*0.4) + '" fill="white" font-family="Lato" font-weight="700" style="pointer-events:none">' + label + '</text>';
+    if (sel) svg += '<text x="' + (x+bw/2) + '" y="' + (bh-5) + '" text-anchor="middle" font-size="' + (bw*0.4) + '" fill="white" font-family="Inter, system-ui, sans-serif" font-weight="700" style="pointer-events:none">' + label + '</text>';
   });
 
   svg += '</svg>';
