@@ -1182,11 +1182,7 @@ function buildFretDiagram(chord, W, H, fontSize, stringCount) {
     } else {
       const relFret = fret - startFret + 1;
       const cy = mt + (relFret - 0.5) * fh;
-      svg += `<circle cx="${x}" cy="${cy}" r="${r}" fill="#1a1b2e"/>`;
-      const label = chord.fingers[s];
-      if (label && label !== 'O' && label !== 'x') {
-        svg += `<text x="${x}" y="${cy+3.5}" text-anchor="middle" font-size="${fontSize*0.5}" fill="white" font-family="Lato" font-weight="700">${label}</text>`;
-      }
+      svg += `<circle cx="${x}" cy="${cy}" r="${r}" fill="#09090b"/>`;
     }
   });
 
