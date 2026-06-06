@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chordex</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --indigo:    #5b4fcf;
+  --indigo2:   #7b6fdf;
+  --indigo3:   #3d34a5;
+  --bg:        #f0f1f6;
+  --surface:   #ffffff;
+  --border:    #e8e9f0;
+  --text:      #1a1b2e;
+  --muted:     #8b8fa8;
+  --active-pill: #ffffff;
+  --pill-bg:   rgba(255,255,255,0.18);
+  --radius:    18px;
+  --radius-sm: 12px;
+  --dot:       #1a1b2e;
+  --dot-acc:   #5b4fcf;
+  --string-c:  #c8cad8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  font-family: 'Nunito Sans', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ZONE ────────────────────────── */
+.header-zone {
+  background: linear-gradient(160deg, var(--indigo) 0%, var(--indigo2) 100%);
+  padding: 18px 20px 0;
+  position: sticky; top: 0; z-index: 50;
+}
+
+.header-top {
+  display: flex; align-items: center;
+  justify-content: center; margin-bottom: 16px;
+}
+.header-top h1 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem; font-weight: 800;
+  color: white; letter-spacing: -0.01em;
+}
+
+/* Instrument switcher — pill style in header */
+.instrument-bar {
+  display: flex; gap: 4px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 100px;
+  padding: 4px; margin-bottom: 14px;
+}
+.inst-btn {
+  flex: 1; padding: 8px 6px;
+  background: none; border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer; border-radius: 100px;
+  transition: all 0.2s;
+}
+.inst-btn.active {
+  background: rgba(255,255,255,0.22);
+  color: white;
+}
+.inst-icon { font-size: 1rem; }
+
+/* Section tabs — sit at bottom of header zone */
+.tabs {
+  display: flex; gap: 0;
+}
+.tab {
+  flex: 1; padding: 11px 4px 13px;
+  background: none; border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.18s;
+}
+.tab.active {
+  color: white;
+  border-bottom: 3px solid white;
+}
+
+/* ── PAGES ──────────────────────────────── */
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+
+/* ── SEARCH ──────────────────────────────── */
+.search-bar { margin-bottom: 14px; position: relative; }
+.search-bar input {
+  width: 100%;
+  padding: 13px 16px 13px 44px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  color: var(--text); outline: none;
+  box-shadow: 0 2px 12px rgba(91,79,207,0.08);
+}
+.search-bar input::placeholder { color: var(--muted); font-weight: 400; }
+.search-icon {
+  position: absolute; left: 15px; top: 50%;
+  transform: translateY(-50%); color: var(--muted); font-size: 1.05rem;
+  pointer-events: none;
+}
+
+/* ── FILTER ──────────────────────────────── */
+.filter-section { margin-bottom: 16px; }
+.filter-row {
+  display: flex; flex-wrap: wrap;
+  gap: 6px; align-items: center; margin-bottom: 8px;
+}
+.filter-label {
+  font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--muted); min-width: 30px;
+}
+.pill {
+  padding: 5px 13px; border-radius: 100px;
+  border: none;
+  background: var(--surface);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--muted); cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.pill:hover { color: var(--indigo); }
+.pill.active {
+  background: var(--indigo);
+  color: white;
+  box-shadow: 0 3px 10px rgba(91,79,207,0.3);
+}
+
+/* ── CHORD GRID ──────────────────────────── */
+.chord-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.chord-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 12px 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.chord-card:hover {
+  box-shadow: 0 6px 24px rgba(91,79,207,0.15);
+  transform: translateY(-2px);
+}
+.chord-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem; font-weight: 900;
+  color: var(--text); margin-bottom: 1px;
+  letter-spacing: -0.02em;
+}
+.chord-type {
+  font-size: 0.6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin-bottom: 10px;
+}
+.diagram { width: 100%; aspect-ratio: 0.75; }
+.no-results {
+  grid-column: 1/-1; text-align: center;
+  padding: 48px 20px; color: var(--muted); font-size: 0.9rem;
+}
+
+/* ── DETAIL SHEET ────────────────────────── */
+.detail-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(26,27,46,0.45);
+  backdrop-filter: blur(6px);
+  z-index: 100; align-items: flex-end; justify-content: center;
+}
+.detail-overlay.open { display: flex; }
+.detail-sheet {
+  background: var(--surface);
+  border-radius: 28px 28px 0 0;
+  padding: 20px 20px 32px;
+  width: 100%; max-width: 500px;
+  max-height: 88vh; overflow-y: auto;
+  animation: slideUp 0.28s cubic-bezier(0.32,0.72,0,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.sheet-handle {
+  width: 38px; height: 4px;
+  background: var(--border); border-radius: 2px;
+  margin: 0 auto 18px;
+}
+.sheet-chord-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 2.4rem; font-weight: 900;
+  color: var(--text); letter-spacing: -0.03em;
+}
+.sheet-chord-full {
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 20px; margin-top: 2px;
+}
+.sheet-diagram-wrap {
+  display: flex; justify-content: center; margin-bottom: 16px;
+}
+.sheet-diagram-wrap svg { width: 58%; }
+.finger-labels {
+  display: flex; justify-content: center;
+  gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.finger-label {
+  background: var(--bg); border-radius: var(--radius-sm);
+  padding: 6px 10px; text-align: center;
+  font-size: 0.62rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+}
+.finger-label span {
+  display: block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem; font-weight: 900;
+  color: var(--indigo); margin-bottom: 2px;
+}
+
+.inversion-nav {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  background: var(--bg); border-radius: var(--radius-sm); padding: 8px 14px;
+}
+.inv-label { text-align: center; flex: 1; }
+.inv-label-title {
+  font-size: 0.58rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+}
+.inv-label-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem; font-weight: 800; color: var(--text); margin-top: 1px;
+}
+.inv-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.4rem; color: var(--text);
+  padding: 4px 10px; border-radius: 8px;
+  transition: background 0.15s; line-height: 1;
+}
+.inv-btn:hover { background: var(--border); }
+.inv-btn:disabled { color: var(--border); cursor: default; }
+
+.close-btn {
+  width: 100%; padding: 14px;
+  background: var(--indigo); color: white;
+  border: none; border-radius: var(--radius);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; margin-top: 8px;
+  box-shadow: 0 4px 16px rgba(91,79,207,0.3);
+  transition: all 0.15s;
+}
+.close-btn:hover { background: var(--indigo3); }
+
+/* ── PROGRESSIONS ────────────────────────── */
+.section-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem; font-weight: 900;
+  color: var(--text); margin-bottom: 14px; letter-spacing: -0.01em;
+}
+.prog-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.prog-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 3px;
+}
+.prog-genre {
+  font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--indigo); margin-bottom: 10px;
+}
+.prog-chords {
+  display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+}
+.prog-chord-badge {
+  background: var(--bg); border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
+  color: var(--text); cursor: pointer; transition: all 0.15s;
+}
+.prog-chord-badge:hover {
+  background: var(--indigo); color: white;
+  box-shadow: 0 3px 10px rgba(91,79,207,0.25);
+}
+.arrow { color: var(--muted); font-size: 0.75rem; }
+.prog-desc { font-size: 0.78rem; color: var(--muted); margin-top: 10px; line-height: 1.55; }
+
+/* ── SCALES ──────────────────────────────── */
+.scale-controls {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px; margin-bottom: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.scale-info {
+  font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 900;
+  color: var(--text); margin-bottom: 10px; min-height: 1.5em; letter-spacing: -0.01em;
+}
+.fretboard-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 12px 8px 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-bottom: 12px; overflow-x: auto;
+}
+.piano-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+}
+.scale-notes-row {
+  display: flex; flex-wrap: wrap;
+  gap: 6px; justify-content: center; margin-bottom: 14px;
+}
+.scale-note-badge {
+  background: var(--surface);
+  border-radius: 100px; padding: 4px 13px;
+  font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 700;
+  color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.scale-note-badge.root {
+  background: var(--indigo); color: white;
+  box-shadow: 0 3px 10px rgba(91,79,207,0.3);
+}
+
+/* ── FINDER ──────────────────────────────── */
+.finder-instr-note {
+  font-size: 0.78rem; color: var(--muted);
+  text-align: center; margin-bottom: 12px;
+}
+.finder-fretboard-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 12px 8px 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-bottom: 14px; overflow-x: auto;
+}
+.finder-piano-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  margin-bottom: 14px;
+}
+.finder-selected-notes {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  justify-content: center; margin-bottom: 12px; min-height: 32px;
+}
+.finder-note-tag {
+  background: var(--indigo); color: white;
+  border-radius: 100px; padding: 4px 13px;
+  font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
+  box-shadow: 0 2px 8px rgba(91,79,207,0.25);
+}
+.finder-note-tag:hover { background: var(--indigo3); }
+.finder-clear-btn {
+  width: 100%; padding: 11px; background: var(--surface);
+  border: none; border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+}
+.finder-clear-btn:hover { color: var(--indigo); }
+.finder-results-title {
+  font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--muted); margin-bottom: 10px; text-align: center;
+}
+.finder-results-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.finder-result-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px 12px; cursor: pointer;
+  transition: all 0.18s; text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.finder-result-card:hover {
+  box-shadow: 0 6px 20px rgba(91,79,207,0.18);
+  transform: translateY(-2px);
+}
+.finder-result-name {
+  font-family: 'Nunito', sans-serif; font-size: 1.25rem; font-weight: 900; color: var(--text);
+}
+.finder-result-full {
+  font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--muted); margin-top: 2px;
+}
+.finder-no-match {
+  text-align: center; color: var(--muted);
+  padding: 24px; font-size: 0.88rem; line-height: 1.6;
+}
+
+/* ── RESPONSIVE / DESKTOP ───────────────── */
+@media (min-width: 768px) {
+  body { display: flex; flex-direction: column; align-items: center; }
+
+  .header-zone {
+    width: 100%;
+    padding: 20px 0 0;
+  }
+
+  .header-top { max-width: 900px; margin: 0 auto 16px; padding: 0 32px; }
+  .header-top h1 { font-size: 1.5rem; }
+
+  .instrument-bar {
+    max-width: 400px;
+    margin: 0 auto 14px;
+  }
+
+  .tabs {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .tab { font-size: 0.75rem; padding: 12px 8px 14px; }
+
+  /* Main content wrapper */
+  .page {
+    width: 100%;
+    max-width: 900px;
+    padding: 24px 32px;
+  }
+
+  /* Chord grid — 3 or 4 cols on desktop */
+  .chord-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  /* Finder & progressions side-by-side feel */
+  .finder-results-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Detail sheet max width */
+  .detail-sheet { max-width: 520px; padding: 24px 28px 36px; }
+
+  /* Scale controls horizontal layout */
+  .scale-controls { display: flex; gap: 24px; align-items: flex-start; }
+  .scale-controls .filter-row { flex: 1; margin-bottom: 0; }
+
+  /* Progressions in 2 cols */
+  #progList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .prog-card { margin-bottom: 0; }
+
+  /* Search + filters side by side */
+  .search-bar { max-width: 400px; }
+
+  /* Fretboard scale: cap width nicely */
+  .fretboard-wrap { max-width: 100%; }
+}
+
+@media (min-width: 1100px) {
+  .chord-grid { grid-template-columns: repeat(4, 1fr); }
+  .finder-results-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+</style>
+</head>
+<body>
+
+<div class="header-zone">
+  <div class="header-top">
+    <h1>Chordex</h1>
+  </div>
+
+  <div class="instrument-bar">
+    <button class="inst-btn active" onclick="setInstrument('ukulele', this)">
+      Ukulele
+    </button>
+    <button class="inst-btn" onclick="setInstrument('guitar', this)">
+      Guitar
+    </button>
+    <button class="inst-btn" onclick="setInstrument('piano', this)">
+      Piano
+    </button>
+    <button class="inst-btn" onclick="setInstrument('bass', this)">
+      Bass
+    </button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('chords', this)">Chords</button>
+    <button class="tab" onclick="showPage('scales', this)">Scales</button>
+    <button class="tab" onclick="showPage('progressions', this)">Progressions</button>
+    <button class="tab" onclick="showPage('finder', this); openFinder()">Finder</button>
+  </div>
+</div>
+
+<!-- CHORDS PAGE -->
+<div id="chords" class="page active">
+  <div class="search-bar">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="searchInput" placeholder="Search chords…" oninput="filterChords()">
+  </div>
+  <div class="filter-section">
+    <div class="filter-row">
+      <span class="filter-label">Root</span>
+      <button class="pill active" data-root="all" onclick="filterRoot('all',this)">All</button>
+      <button class="pill" data-root="C" onclick="filterRoot('C',this)">C</button>
+      <button class="pill" data-root="C#" onclick="filterRoot('C#',this)">C#</button>
+      <button class="pill" data-root="D" onclick="filterRoot('D',this)">D</button>
+      <button class="pill" data-root="Eb" onclick="filterRoot('Eb',this)">Eb</button>
+      <button class="pill" data-root="E" onclick="filterRoot('E',this)">E</button>
+      <button class="pill" data-root="F" onclick="filterRoot('F',this)">F</button>
+      <button class="pill" data-root="F#" onclick="filterRoot('F#',this)">F#</button>
+      <button class="pill" data-root="G" onclick="filterRoot('G',this)">G</button>
+      <button class="pill" data-root="Ab" onclick="filterRoot('Ab',this)">Ab</button>
+      <button class="pill" data-root="A" onclick="filterRoot('A',this)">A</button>
+      <button class="pill" data-root="Bb" onclick="filterRoot('Bb',this)">Bb</button>
+      <button class="pill" data-root="B" onclick="filterRoot('B',this)">B</button>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Type</span>
+      <button class="pill active" data-type="all" onclick="filterType('all',this)">All</button>
+      <button class="pill" data-type="major" onclick="filterType('major',this)">Major</button>
+      <button class="pill" data-type="minor" onclick="filterType('minor',this)">Minor</button>
+      <button class="pill" data-type="7th" onclick="filterType('7th',this)">7th</button>
+      <button class="pill" data-type="maj7" onclick="filterType('maj7',this)">Maj7</button>
+      <button class="pill" data-type="m7" onclick="filterType('m7',this)">m7</button>
+      <button class="pill" data-type="dim" onclick="filterType('dim',this)">Dim</button>
+      <button class="pill" data-type="aug" onclick="filterType('aug',this)">Aug</button>
+      <button class="pill" data-type="sus" onclick="filterType('sus',this)">Sus</button>
+      <button class="pill" data-type="add9" onclick="filterType('add9',this)">Add9</button>
+      <button class="pill" data-type="6th" onclick="filterType('6th',this)">6th</button>
+      <button class="pill" data-type="9th" onclick="filterType('9th',this)">9th</button>
+      <button class="pill" data-type="m9" onclick="filterType('m9',this)">m9</button>
+      <button class="pill" data-type="m7b5" onclick="filterType('m7b5',this)">m7b5</button>
+      <button class="pill" data-type="7aug" onclick="filterType('7aug',this)">7aug</button>
+    </div>
+  </div>
+  <div class="chord-grid" id="chordGrid"></div>
+</div>
+
+<!-- SCALES PAGE -->
+<div id="scales" class="page">
+  <div class="scale-controls">
+    <div class="filter-row" style="margin-bottom:8px">
+      <span class="filter-label">Root</span>
+      <div id="scaleRootPills" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Scale</span>
+      <div id="scaleTypePills" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+  </div>
+  <div class="scale-info" id="scaleInfo"></div>
+  <div id="scaleDiagramWrap"></div>
+  <div class="scale-notes-row" id="scaleNotesRow"></div>
+</div>
+
+<!-- PROGRESSIONS PAGE -->
+<div id="progressions" class="page">
+  <div class="section-title">Common Progressions</div>
+  <div id="progList"></div>
+</div>
+
+<!-- FINDER PAGE -->
+<div id="finder" class="page">
+  <div class="finder-instr-note" id="finderNote">Tap notes on the fretboard to identify the chord</div>
+  <div id="finderDiagramWrap"></div>
+  <div class="finder-selected-notes" id="finderSelectedNotes"></div>
+  <button class="finder-clear-btn" onclick="clearFinderNotes()">Clear All Notes</button>
+  <div class="finder-results" id="finderResults"></div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-chord-name" id="detailName"></div>
+    <div class="sheet-chord-full" id="detailFull"></div>
+    <div class="sheet-diagram-wrap" id="detailDiagramWrap"></div>
+    <div class="finger-labels" id="detailFingers"></div>
+    <div class="inversion-nav" id="invNav">
+      <button class="inv-btn" id="invPrev" onclick="stepInversion(-1)">‹</button>
+      <div class="inv-label">
+        <div class="inv-label-title">Voicing</div>
+        <div class="inv-label-name" id="invLabelName">Root Position</div>
+      </div>
+      <button class="inv-btn" id="invNext" onclick="stepInversion(1)">›</button>
+    </div>
+    <button class="close-btn" onclick="closeDetail()">Done</button>
+  </div>
+</div>
+
+<script>
+
+// ─── INSTRUMENT STATE ───────────────────────────────────────────────
+let currentInstrument = 'ukulele';
+
+// ─── CHORD DATA ──────────────────────────────────────────────────────
+
+// Bass chords: frets = [E, A, D, G], -1 = mute
+// Root notes and power chords — bass typically plays roots/fifths
+const BASS_CHORDS = [
+  // Major (root position — root + octave voicings)
+  { name:'C',    full:'C Major',       type:'major', frets:[-1,3,2,0],   fingers:['x','3','2','O'] },
+  { name:'D',    full:'D Major',       type:'major', frets:[-1,0,0,2],   fingers:['x','O','O','2'] },
+  { name:'E',    full:'E Major',       type:'major', frets:[0,2,2,1],    fingers:['O','2','3','1'] },
+  { name:'F',    full:'F Major',       type:'major', frets:[1,3,3,2],    fingers:['1','3','4','2'] },
+  { name:'G',    full:'G Major',       type:'major', frets:[3,2,0,0],    fingers:['3','2','O','O'] },
+  { name:'A',    full:'A Major',       type:'major', frets:[-1,0,2,2],   fingers:['x','O','2','3'] },
+  { name:'B',    full:'B Major',       type:'major', frets:[-1,2,4,4],   fingers:['x','1','3','4'] },
+  { name:'Bb',   full:'Bb Major',      type:'major', frets:[-1,1,3,3],   fingers:['x','1','3','4'] },
+  { name:'Eb',   full:'Eb Major',      type:'major', frets:[-1,6,5,3],   fingers:['x','4','3','1'] },
+  { name:'Ab',   full:'Ab Major',      type:'major', frets:[4,6,6,5],    fingers:['1','3','4','2'] },
+  // Minor
+  { name:'Am',   full:'A Minor',       type:'minor', frets:[-1,0,2,2],   fingers:['x','O','1','2'] },
+  { name:'Bm',   full:'B Minor',       type:'minor', frets:[-1,2,4,4],   fingers:['x','1','3','4'] },
+  { name:'Cm',   full:'C Minor',       type:'minor', frets:[-1,3,5,5],   fingers:['x','1','3','4'] },
+  { name:'Dm',   full:'D Minor',       type:'minor', frets:[-1,0,0,1],   fingers:['x','O','O','1'] },
+  { name:'Em',   full:'E Minor',       type:'minor', frets:[0,2,2,0],    fingers:['O','2','3','O'] },
+  { name:'Fm',   full:'F Minor',       type:'minor', frets:[1,3,3,1],    fingers:['1','3','4','1'] },
+  { name:'Gm',   full:'G Minor',       type:'minor', frets:[3,5,5,3],    fingers:['1','3','4','1'] },
+  { name:'Bbm',  full:'Bb Minor',      type:'minor', frets:[-1,1,3,3],   fingers:['x','1','3','4'] },
+  // 7th
+  { name:'C7',   full:'C Dom 7',       type:'7th',   frets:[-1,3,2,3],   fingers:['x','2','1','3'] },
+  { name:'D7',   full:'D Dom 7',       type:'7th',   frets:[-1,0,0,2],   fingers:['x','O','O','2'] },
+  { name:'E7',   full:'E Dom 7',       type:'7th',   frets:[0,2,0,1],    fingers:['O','2','O','1'] },
+  { name:'G7',   full:'G Dom 7',       type:'7th',   frets:[3,2,0,1],    fingers:['3','2','O','1'] },
+  { name:'A7',   full:'A Dom 7',       type:'7th',   frets:[-1,0,2,0],   fingers:['x','O','2','O'] },
+  { name:'B7',   full:'B Dom 7',       type:'7th',   frets:[-1,2,4,2],   fingers:['x','1','3','1'] },
+  // Major 7
+  { name:'Cmaj7',full:'C Major 7',     type:'maj7',  frets:[-1,3,2,0],   fingers:['x','3','2','O'] },
+  { name:'Dmaj7',full:'D Major 7',     type:'maj7',  frets:[-1,0,0,2],   fingers:['x','O','O','2'] },
+  { name:'Emaj7',full:'E Major 7',     type:'maj7',  frets:[0,2,1,1],    fingers:['O','3','1','2'] },
+  { name:'Gmaj7',full:'G Major 7',     type:'maj7',  frets:[3,2,0,2],    fingers:['2','1','O','3'] },
+  { name:'Amaj7',full:'A Major 7',     type:'maj7',  frets:[-1,0,2,1],   fingers:['x','O','2','1'] },
+  // Minor 7
+  { name:'Am7',  full:'A Minor 7',     type:'m7',    frets:[-1,0,2,0],   fingers:['x','O','2','O'] },
+  { name:'Bm7',  full:'B Minor 7',     type:'m7',    frets:[-1,2,4,2],   fingers:['x','1','3','1'] },
+  { name:'Dm7',  full:'D Minor 7',     type:'m7',    frets:[-1,0,0,1],   fingers:['x','O','O','1'] },
+  { name:'Em7',  full:'E Minor 7',     type:'m7',    frets:[0,2,2,3],    fingers:['O','1','2','4'] },
+  { name:'Gm7',  full:'G Minor 7',     type:'m7',    frets:[3,5,3,3],    fingers:['1','4','1','1'] },
+  // Diminished
+  { name:'Adim', full:'A Dim',         type:'dim',   frets:[-1,0,1,2],   fingers:['x','O','1','3'] },
+  { name:'Edim', full:'E Dim',         type:'dim',   frets:[0,1,2,3],    fingers:['O','1','2','4'] },
+  { name:'Bdim', full:'B Dim',         type:'dim',   frets:[-1,2,3,4],   fingers:['x','1','2','4'] },
+  // Augmented
+  { name:'Caug', full:'C Aug',         type:'aug',   frets:[-1,3,2,1],   fingers:['x','4','3','1'] },
+  { name:'Eaug', full:'E Aug',         type:'aug',   frets:[0,3,2,1],    fingers:['O','4','3','1'] },
+  { name:'Gaug', full:'G Aug',         type:'aug',   frets:[3,2,1,0],    fingers:['4','3','2','O'] },
+  // Sus
+  { name:'Csus4',full:'C Sus 4',       type:'sus',   frets:[-1,3,3,0],   fingers:['x','2','3','O'] },
+  { name:'Dsus4',full:'D Sus 4',       type:'sus',   frets:[-1,0,0,3],   fingers:['x','O','O','3'] },
+  { name:'Esus4',full:'E Sus 4',       type:'sus',   frets:[0,2,2,2],    fingers:['O','1','2','3'] },
+  { name:'Gsus4',full:'G Sus 4',       type:'sus',   frets:[3,3,0,0],    fingers:['3','4','O','O'] },
+  { name:'Asus4',full:'A Sus 4',       type:'sus',   frets:[-1,0,2,3],   fingers:['x','O','1','3'] },
+  // m7b5
+  { name:'Am7b5',full:'A Half Dim',    type:'m7b5',  frets:[-1,0,1,1],   fingers:['x','O','1','2'] },
+  { name:'Em7b5',full:'E Half Dim',    type:'m7b5',  frets:[0,1,2,3],    fingers:['O','1','2','4'] },
+  { name:'Bm7b5',full:'B Half Dim',    type:'m7b5',  frets:[-1,2,3,3],   fingers:['x','1','3','4'] },
+];
+
+// Ukulele: frets = [G, C, E, A] — mathematically verified from GCEA tuning
+const UKE_CHORDS = [
+  { name:'C', full:'C Major', type:'major', frets:[0,0,0,3], fingers:['O','O','O','3'] },
+  { name:'Cm', full:'C Minor', type:'minor', frets:[0,3,3,3], fingers:['O','3','3','3'] },
+  { name:'C7', full:'C Dom 7', type:'7th', frets:[0,0,0,1], fingers:['O','O','O','1'] },
+  { name:'Cmaj7', full:'C Major 7', type:'maj7', frets:[0,0,0,2], fingers:['O','O','O','2'] },
+  { name:'Cm7', full:'C Minor 7', type:'m7', frets:[3,3,3,3], fingers:['3','3','3','3'] },
+  { name:'Cdim', full:'C Dim', type:'dim', frets:[5,3,2,3], fingers:['5','3','2','3'] },
+  { name:'Caug', full:'C Aug', type:'aug', frets:[1,0,0,3], fingers:['1','O','O','3'] },
+  { name:'Csus2', full:'C Sus 2', type:'sus2', frets:[0,2,3,3], fingers:['O','2','3','3'] },
+  { name:'Csus4', full:'C Sus 4', type:'sus4', frets:[0,0,1,3], fingers:['O','O','1','3'] },
+  { name:'Cadd9', full:'C Add 9', type:'add9', frets:[0,2,0,3], fingers:['O','2','O','3'] },
+  { name:'C6', full:'C 6th', type:'6th', frets:[0,0,0,0], fingers:['O','O','O','O'] },
+  { name:'Cm6', full:'C Minor 6', type:'m6', frets:[2,3,3,3], fingers:['2','3','3','3'] },
+  { name:'Cm7b5', full:'C Half Dim', type:'m7b5', frets:[3,3,2,3], fingers:['3','3','2','3'] },
+  { name:'C7aug', full:'C Dom 7 Aug', type:'7aug', frets:[1,0,0,1], fingers:['1','O','O','1'] },
+  { name:'C#', full:'C# Major', type:'major', frets:[1,1,1,4], fingers:['1','1','1','4'] },
+  { name:'C#m', full:'C# Minor', type:'minor', frets:[1,1,0,4], fingers:['1','1','O','4'] },
+  { name:'C#7', full:'C# Dom 7', type:'7th', frets:[1,1,1,2], fingers:['1','1','1','2'] },
+  { name:'C#maj7', full:'C# Major 7', type:'maj7', frets:[1,1,1,3], fingers:['1','1','1','3'] },
+  { name:'C#m7', full:'C# Minor 7', type:'m7', frets:[1,1,0,2], fingers:['1','1','O','2'] },
+  { name:'C#dim', full:'C# Dim', type:'dim', frets:[0,4,0,4], fingers:['O','4','O','4'] },
+  { name:'C#aug', full:'C# Aug', type:'aug', frets:[2,1,1,0], fingers:['2','1','1','O'] },
+  { name:'C#sus2', full:'C# Sus 2', type:'sus2', frets:[1,3,4,4], fingers:['1','3','4','4'] },
+  { name:'C#sus4', full:'C# Sus 4', type:'sus4', frets:[1,1,2,4], fingers:['1','1','2','4'] },
+  { name:'C#add9', full:'C# Add 9', type:'add9', frets:[1,3,1,4], fingers:['1','3','1','4'] },
+  { name:'C#6', full:'C# 6th', type:'6th', frets:[1,1,1,1], fingers:['1','1','1','1'] },
+  { name:'C#m6', full:'C# Minor 6', type:'m6', frets:[1,1,0,1], fingers:['1','1','O','1'] },
+  { name:'C#m7b5', full:'C# Half Dim', type:'m7b5', frets:[0,1,0,2], fingers:['O','1','O','2'] },
+  { name:'C#7aug', full:'C# Dom 7 Aug', type:'7aug', frets:[2,1,1,2], fingers:['2','1','1','2'] },
+  { name:'D', full:'D Major', type:'major', frets:[2,2,2,0], fingers:['2','2','2','O'] },
+  { name:'Dm', full:'D Minor', type:'minor', frets:[2,2,1,0], fingers:['2','2','1','O'] },
+  { name:'D7', full:'D Dom 7', type:'7th', frets:[2,2,2,3], fingers:['2','2','2','3'] },
+  { name:'Dmaj7', full:'D Major 7', type:'maj7', frets:[2,2,2,4], fingers:['2','2','2','4'] },
+  { name:'Dm7', full:'D Minor 7', type:'m7', frets:[2,2,1,3], fingers:['2','2','1','3'] },
+  { name:'Ddim', full:'D Dim', type:'dim', frets:[1,2,1,5], fingers:['1','2','1','5'] },
+  { name:'Daug', full:'D Aug', type:'aug', frets:[3,2,2,1], fingers:['3','2','2','1'] },
+  { name:'Dsus2', full:'D Sus 2', type:'sus2', frets:[2,2,0,0], fingers:['2','2','O','O'] },
+  { name:'Dsus4', full:'D Sus 4', type:'sus4', frets:[0,2,3,0], fingers:['O','2','3','O'] },
+  { name:'Dadd9', full:'D Add 9', type:'add9', frets:[7,6,0,0], fingers:['7','6','O','O'] },
+  { name:'D6', full:'D 6th', type:'6th', frets:[2,2,2,2], fingers:['2','2','2','2'] },
+  { name:'Dm6', full:'D Minor 6', type:'m6', frets:[2,2,1,2], fingers:['2','2','1','2'] },
+  { name:'Dm7b5', full:'D Half Dim', type:'m7b5', frets:[1,2,1,3], fingers:['1','2','1','3'] },
+  { name:'D7aug', full:'D Dom 7 Aug', type:'7aug', frets:[3,2,2,3], fingers:['3','2','2','3'] },
+  { name:'Eb', full:'Eb Major', type:'major', frets:[0,3,3,1], fingers:['O','3','3','1'] },
+  { name:'Ebm', full:'Eb Minor', type:'minor', frets:[3,3,2,1], fingers:['3','3','2','1'] },
+  { name:'Eb7', full:'Eb Dom 7', type:'7th', frets:[3,3,3,4], fingers:['3','3','3','4'] },
+  { name:'Ebmaj7', full:'Eb Major 7', type:'maj7', frets:[3,3,3,5], fingers:['3','3','3','5'] },
+  { name:'Ebm7', full:'Eb Minor 7', type:'m7', frets:[3,3,2,4], fingers:['3','3','2','4'] },
+  { name:'Ebdim', full:'Eb Dim', type:'dim', frets:[2,3,2,0], fingers:['2','3','2','O'] },
+  { name:'Ebaug', full:'Eb Aug', type:'aug', frets:[0,3,3,2], fingers:['O','3','3','2'] },
+  { name:'Ebsus2', full:'Eb Sus 2', type:'sus2', frets:[3,3,1,1], fingers:['3','3','1','1'] },
+  { name:'Ebsus4', full:'Eb Sus 4', type:'sus4', frets:[1,3,4,1], fingers:['1','3','4','1'] },
+  { name:'Ebadd9', full:'Eb Add 9', type:'add9', frets:[0,3,1,1], fingers:['O','3','1','1'] },
+  { name:'Eb6', full:'Eb 6th', type:'6th', frets:[3,3,3,3], fingers:['3','3','3','3'] },
+  { name:'Ebm6', full:'Eb Minor 6', type:'m6', frets:[3,3,2,3], fingers:['3','3','2','3'] },
+  { name:'Ebm7b5', full:'Eb Half Dim', type:'m7b5', frets:[2,3,2,4], fingers:['2','3','2','4'] },
+  { name:'Eb7aug', full:'Eb Dom 7 Aug', type:'7aug', frets:[4,3,3,4], fingers:['4','3','3','4'] },
+  { name:'E', full:'E Major', type:'major', frets:[1,4,0,2], fingers:['1','4','O','2'] },
+  { name:'Em', full:'E Minor', type:'minor', frets:[0,4,0,2], fingers:['O','4','O','2'] },
+  { name:'E7', full:'E Dom 7', type:'7th', frets:[1,2,0,2], fingers:['1','2','O','2'] },
+  { name:'Emaj7', full:'E Major 7', type:'maj7', frets:[1,3,0,2], fingers:['1','3','O','2'] },
+  { name:'Em7', full:'E Minor 7', type:'m7', frets:[0,2,0,2], fingers:['O','2','O','2'] },
+  { name:'Edim', full:'E Dim', type:'dim', frets:[0,4,0,1], fingers:['O','4','O','1'] },
+  { name:'Eaug', full:'E Aug', type:'aug', frets:[1,0,0,3], fingers:['1','O','O','3'] },
+  { name:'Esus2', full:'E Sus 2', type:'sus2', frets:[4,4,2,2], fingers:['4','4','2','2'] },
+  { name:'Esus4', full:'E Sus 4', type:'sus4', frets:[4,4,0,0], fingers:['4','4','O','O'] },
+  { name:'Eadd9', full:'E Add 9', type:'add9', frets:[1,4,2,2], fingers:['1','4','2','2'] },
+  { name:'E6', full:'E 6th', type:'6th', frets:[1,1,0,2], fingers:['1','1','O','2'] },
+  { name:'Em6', full:'E Minor 6', type:'m6', frets:[0,1,0,2], fingers:['O','1','O','2'] },
+  { name:'Em7b5', full:'E Half Dim', type:'m7b5', frets:[0,2,0,1], fingers:['O','2','O','1'] },
+  { name:'E7aug', full:'E Dom 7 Aug', type:'7aug', frets:[1,2,0,3], fingers:['1','2','O','3'] },
+  { name:'F', full:'F Major', type:'major', frets:[2,0,1,0], fingers:['2','O','1','O'] },
+  { name:'Fm', full:'F Minor', type:'minor', frets:[1,0,1,3], fingers:['1','O','1','3'] },
+  { name:'F7', full:'F Dom 7', type:'7th', frets:[2,3,1,3], fingers:['2','3','1','3'] },
+  { name:'Fmaj7', full:'F Major 7', type:'maj7', frets:[5,5,0,0], fingers:['5','5','O','O'] },
+  { name:'Fm7', full:'F Minor 7', type:'m7', frets:[1,3,1,3], fingers:['1','3','1','3'] },
+  { name:'Fdim', full:'F Dim', type:'dim', frets:[4,5,4,2], fingers:['4','5','4','2'] },
+  { name:'Faug', full:'F Aug', type:'aug', frets:[2,1,1,0], fingers:['2','1','1','O'] },
+  { name:'Fsus2', full:'F Sus 2', type:'sus2', frets:[0,0,1,3], fingers:['O','O','1','3'] },
+  { name:'Fsus4', full:'F Sus 4', type:'sus4', frets:[3,0,1,1], fingers:['3','O','1','1'] },
+  { name:'Fadd9', full:'F Add 9', type:'add9', frets:[0,0,1,0], fingers:['O','O','1','O'] },
+  { name:'F6', full:'F 6th', type:'6th', frets:[2,2,1,3], fingers:['2','2','1','3'] },
+  { name:'Fm6', full:'F Minor 6', type:'m6', frets:[1,2,1,3], fingers:['1','2','1','3'] },
+  { name:'Fm7b5', full:'F Half Dim', type:'m7b5', frets:[1,3,1,2], fingers:['1','3','1','2'] },
+  { name:'F7aug', full:'F Dom 7 Aug', type:'7aug', frets:[2,3,1,4], fingers:['2','3','1','4'] },
+  { name:'F#', full:'F# Major', type:'major', frets:[3,1,2,1], fingers:['3','1','2','1'] },
+  { name:'F#m', full:'F# Minor', type:'minor', frets:[2,1,2,0], fingers:['2','1','2','O'] },
+  { name:'F#7', full:'F# Dom 7', type:'7th', frets:[3,4,2,4], fingers:['3','4','2','4'] },
+  { name:'F#maj7', full:'F# Major 7', type:'maj7', frets:[3,5,2,4], fingers:['3','5','2','4'] },
+  { name:'F#m7', full:'F# Minor 7', type:'m7', frets:[2,4,2,4], fingers:['2','4','2','4'] },
+  { name:'F#dim', full:'F# Dim', type:'dim', frets:[2,0,2,0], fingers:['2','O','2','O'] },
+  { name:'F#aug', full:'F# Aug', type:'aug', frets:[3,2,2,1], fingers:['3','2','2','1'] },
+  { name:'F#sus2', full:'F# Sus 2', type:'sus2', frets:[1,1,2,4], fingers:['1','1','2','4'] },
+  { name:'F#sus4', full:'F# Sus 4', type:'sus4', frets:[4,1,2,2], fingers:['4','1','2','2'] },
+  { name:'F#add9', full:'F# Add 9', type:'add9', frets:[1,1,2,1], fingers:['1','1','2','1'] },
+  { name:'F#6', full:'F# 6th', type:'6th', frets:[3,3,2,4], fingers:['3','3','2','4'] },
+  { name:'F#m6', full:'F# Minor 6', type:'m6', frets:[2,3,2,4], fingers:['2','3','2','4'] },
+  { name:'F#m7b5', full:'F# Half Dim', type:'m7b5', frets:[2,4,2,3], fingers:['2','4','2','3'] },
+  { name:'F#7aug', full:'F# Dom 7 Aug', type:'7aug', frets:[3,4,2,5], fingers:['3','4','2','5'] },
+  { name:'G', full:'G Major', type:'major', frets:[0,2,3,2], fingers:['O','2','3','2'] },
+  { name:'Gm', full:'G Minor', type:'minor', frets:[0,2,3,1], fingers:['O','2','3','1'] },
+  { name:'G7', full:'G Dom 7', type:'7th', frets:[0,2,1,2], fingers:['O','2','1','2'] },
+  { name:'Gmaj7', full:'G Major 7', type:'maj7', frets:[0,2,2,2], fingers:['O','2','2','2'] },
+  { name:'Gm7', full:'G Minor 7', type:'m7', frets:[0,2,1,1], fingers:['O','2','1','1'] },
+  { name:'Gdim', full:'G Dim', type:'dim', frets:[0,1,3,1], fingers:['O','1','3','1'] },
+  { name:'Gaug', full:'G Aug', type:'aug', frets:[0,3,3,2], fingers:['O','3','3','2'] },
+  { name:'Gsus2', full:'G Sus 2', type:'sus2', frets:[0,2,3,0], fingers:['O','2','3','O'] },
+  { name:'Gsus4', full:'G Sus 4', type:'sus4', frets:[0,2,3,3], fingers:['O','2','3','3'] },
+  { name:'Gadd9', full:'G Add 9', type:'add9', frets:[2,2,3,2], fingers:['2','2','3','2'] },
+  { name:'G6', full:'G 6th', type:'6th', frets:[0,2,0,2], fingers:['O','2','O','2'] },
+  { name:'Gm6', full:'G Minor 6', type:'m6', frets:[0,2,0,1], fingers:['O','2','O','1'] },
+  { name:'Gm7b5', full:'G Half Dim', type:'m7b5', frets:[0,1,1,1], fingers:['O','1','1','1'] },
+  { name:'G7aug', full:'G Dom 7 Aug', type:'7aug', frets:[0,3,1,2], fingers:['O','3','1','2'] },
+  { name:'Ab', full:'Ab Major', type:'major', frets:[1,3,4,3], fingers:['1','3','4','3'] },
+  { name:'Abm', full:'Ab Minor', type:'minor', frets:[1,3,4,2], fingers:['1','3','4','2'] },
+  { name:'Ab7', full:'Ab Dom 7', type:'7th', frets:[1,3,2,3], fingers:['1','3','2','3'] },
+  { name:'Abmaj7', full:'Ab Major 7', type:'maj7', frets:[1,3,3,3], fingers:['1','3','3','3'] },
+  { name:'Abm7', full:'Ab Minor 7', type:'m7', frets:[1,3,2,2], fingers:['1','3','2','2'] },
+  { name:'Abdim', full:'Ab Dim', type:'dim', frets:[1,2,4,2], fingers:['1','2','4','2'] },
+  { name:'Abaug', full:'Ab Aug', type:'aug', frets:[1,0,0,3], fingers:['1','O','O','3'] },
+  { name:'Absus2', full:'Ab Sus 2', type:'sus2', frets:[1,3,4,1], fingers:['1','3','4','1'] },
+  { name:'Absus4', full:'Ab Sus 4', type:'sus4', frets:[1,3,4,4], fingers:['1','3','4','4'] },
+  { name:'Abadd9', full:'Ab Add 9', type:'add9', frets:[3,3,4,3], fingers:['3','3','4','3'] },
+  { name:'Ab6', full:'Ab 6th', type:'6th', frets:[1,3,1,3], fingers:['1','3','1','3'] },
+  { name:'Abm6', full:'Ab Minor 6', type:'m6', frets:[1,3,1,2], fingers:['1','3','1','2'] },
+  { name:'Abm7b5', full:'Ab Half Dim', type:'m7b5', frets:[1,2,2,2], fingers:['1','2','2','2'] },
+  { name:'Ab7aug', full:'Ab Dom 7 Aug', type:'7aug', frets:[1,4,2,3], fingers:['1','4','2','3'] },
+  { name:'A', full:'A Major', type:'major', frets:[2,1,0,0], fingers:['2','1','O','O'] },
+  { name:'Am', full:'A Minor', type:'minor', frets:[2,0,0,0], fingers:['2','O','O','O'] },
+  { name:'A7', full:'A Dom 7', type:'7th', frets:[0,1,0,0], fingers:['O','1','O','O'] },
+  { name:'Amaj7', full:'A Major 7', type:'maj7', frets:[1,1,0,0], fingers:['1','1','O','O'] },
+  { name:'Am7', full:'A Minor 7', type:'m7', frets:[0,0,0,0], fingers:['O','O','O','O'] },
+  { name:'Adim', full:'A Dim', type:'dim', frets:[5,3,5,0], fingers:['5','3','5','O'] },
+  { name:'Aaug', full:'A Aug', type:'aug', frets:[2,1,1,0], fingers:['2','1','1','O'] },
+  { name:'Asus2', full:'A Sus 2', type:'sus2', frets:[4,4,0,0], fingers:['4','4','O','O'] },
+  { name:'Asus4', full:'A Sus 4', type:'sus4', frets:[2,2,0,0], fingers:['2','2','O','O'] },
+  { name:'Aadd9', full:'A Add 9', type:'add9', frets:[2,1,0,2], fingers:['2','1','O','2'] },
+  { name:'A6', full:'A 6th', type:'6th', frets:[2,4,2,4], fingers:['2','4','2','4'] },
+  { name:'Am6', full:'A Minor 6', type:'m6', frets:[2,4,2,3], fingers:['2','4','2','3'] },
+  { name:'Am7b5', full:'A Half Dim', type:'m7b5', frets:[2,3,3,3], fingers:['2','3','3','3'] },
+  { name:'A7aug', full:'A Dom 7 Aug', type:'7aug', frets:[0,1,1,0], fingers:['O','1','1','O'] },
+  { name:'Bb', full:'Bb Major', type:'major', frets:[3,2,1,1], fingers:['3','2','1','1'] },
+  { name:'Bbm', full:'Bb Minor', type:'minor', frets:[3,1,1,1], fingers:['3','1','1','1'] },
+  { name:'Bb7', full:'Bb Dom 7', type:'7th', frets:[1,2,1,1], fingers:['1','2','1','1'] },
+  { name:'Bbmaj7', full:'Bb Major 7', type:'maj7', frets:[2,2,1,1], fingers:['2','2','1','1'] },
+  { name:'Bbm7', full:'Bb Minor 7', type:'m7', frets:[1,1,1,1], fingers:['1','1','1','1'] },
+  { name:'Bbdim', full:'Bb Dim', type:'dim', frets:[3,1,0,1], fingers:['3','1','O','1'] },
+  { name:'Bbaug', full:'Bb Aug', type:'aug', frets:[3,2,2,1], fingers:['3','2','2','1'] },
+  { name:'Bbsus2', full:'Bb Sus 2', type:'sus2', frets:[3,0,1,1], fingers:['3','O','1','1'] },
+  { name:'Bbsus4', full:'Bb Sus 4', type:'sus4', frets:[3,3,1,1], fingers:['3','3','1','1'] },
+  { name:'Bbadd9', full:'Bb Add 9', type:'add9', frets:[3,2,1,3], fingers:['3','2','1','3'] },
+  { name:'Bb6', full:'Bb 6th', type:'6th', frets:[0,2,1,1], fingers:['O','2','1','1'] },
+  { name:'Bbm6', full:'Bb Minor 6', type:'m6', frets:[0,1,1,1], fingers:['O','1','1','1'] },
+  { name:'Bbm7b5', full:'Bb Half Dim', type:'m7b5', frets:[1,1,0,1], fingers:['1','1','O','1'] },
+  { name:'Bb7aug', full:'Bb Dom 7 Aug', type:'7aug', frets:[1,2,2,1], fingers:['1','2','2','1'] },
+  { name:'B', full:'B Major', type:'major', frets:[4,3,2,2], fingers:['4','3','2','2'] },
+  { name:'Bm', full:'B Minor', type:'minor', frets:[4,2,2,2], fingers:['4','2','2','2'] },
+  { name:'B7', full:'B Dom 7', type:'7th', frets:[2,3,2,2], fingers:['2','3','2','2'] },
+  { name:'Bmaj7', full:'B Major 7', type:'maj7', frets:[3,3,2,2], fingers:['3','3','2','2'] },
+  { name:'Bm7', full:'B Minor 7', type:'m7', frets:[2,2,2,2], fingers:['2','2','2','2'] },
+  { name:'Bdim', full:'B Dim', type:'dim', frets:[4,2,1,2], fingers:['4','2','1','2'] },
+  { name:'Baug', full:'B Aug', type:'aug', frets:[0,3,3,2], fingers:['O','3','3','2'] },
+  { name:'Bsus2', full:'B Sus 2', type:'sus2', frets:[4,1,2,2], fingers:['4','1','2','2'] },
+  { name:'Bsus4', full:'B Sus 4', type:'sus4', frets:[4,4,2,2], fingers:['4','4','2','2'] },
+  { name:'Badd9', full:'B Add 9', type:'add9', frets:[4,3,2,4], fingers:['4','3','2','4'] },
+  { name:'B6', full:'B 6th', type:'6th', frets:[1,3,2,2], fingers:['1','3','2','2'] },
+  { name:'Bm6', full:'B Minor 6', type:'m6', frets:[1,2,2,2], fingers:['1','2','2','2'] },
+  { name:'Bm7b5', full:'B Half Dim', type:'m7b5', frets:[2,2,1,2], fingers:['2','2','1','2'] },
+  { name:'B7aug', full:'B Dom 7 Aug', type:'7aug', frets:[2,3,3,2], fingers:['2','3','3','2'] },
+];
+
+// Guitar standard tuning: [E2, A2, D3, G3, B3, E4] in semitones from C
+// E=4, A=9, D=2(+12)=14, G=7(+12)=19, B=11(+12)=23, E=4(+24)=28
+// We store as relative: E=4, A=9, D=14, G=19, B=23, E=28 → mod12: 4,9,2,7,11,4
+const GTR_OPEN = [4, 9, 2, 7, 11, 4]; // E A D G B E
+const GTR_NAMES = ['E','A','D','G','B','E'];
+
+// Guitar chords: frets = [E, A, D, G, B, e], -1 = mute
+const GTR_CHORDS = [
+  { name:'C',    full:'C Major',   type:'major', frets:[-1,3,2,0,1,0],   fingers:['x','3','2','O','1','O'] },
+  { name:'D',    full:'D Major',   type:'major', frets:[-1,-1,0,2,3,2],  fingers:['x','x','O','1','3','2'] },
+  { name:'E',    full:'E Major',   type:'major', frets:[0,2,2,1,0,0],    fingers:['O','2','3','1','O','O'] },
+  { name:'F',    full:'F Major',   type:'major', frets:[1,3,3,2,1,1],    fingers:['1','3','4','2','1','1'] },
+  { name:'G',    full:'G Major',   type:'major', frets:[3,2,0,0,0,3],    fingers:['2','1','O','O','O','3'] },
+  { name:'A',    full:'A Major',   type:'major', frets:[-1,0,2,2,2,0],   fingers:['x','O','1','2','3','O'] },
+  { name:'B',    full:'B Major',   type:'major', frets:[-1,2,4,4,4,2],   fingers:['x','1','3','3','3','1'] },
+  { name:'Bb',   full:'Bb Major',  type:'major', frets:[-1,1,3,3,3,1],   fingers:['x','1','3','3','3','1'] },
+  { name:'Eb',   full:'Eb Major',  type:'major', frets:[-1,-1,5,3,4,3],  fingers:['x','x','3','1','2','1'] },
+  { name:'Ab',   full:'Ab Major',  type:'major', frets:[4,6,6,5,4,4],    fingers:['1','3','4','2','1','1'] },
+  { name:'Am',   full:'A Minor',   type:'minor', frets:[-1,0,2,2,1,0],   fingers:['x','O','2','3','1','O'] },
+  { name:'Bm',   full:'B Minor',   type:'minor', frets:[-1,2,4,4,3,2],   fingers:['x','1','3','4','2','1'] },
+  { name:'Cm',   full:'C Minor',   type:'minor', frets:[-1,3,5,5,4,3],   fingers:['x','1','3','4','2','1'] },
+  { name:'Dm',   full:'D Minor',   type:'minor', frets:[-1,-1,0,2,3,1],  fingers:['x','x','O','1','3','2'] },  // corrected
+  { name:'Em',   full:'E Minor',   type:'minor', frets:[0,2,2,0,0,0],    fingers:['O','2','3','O','O','O'] },
+  { name:'Fm',   full:'F Minor',   type:'minor', frets:[1,3,3,1,1,1],    fingers:['1','3','4','1','1','1'] },
+  { name:'Gm',   full:'G Minor',   type:'minor', frets:[3,5,5,3,3,3],    fingers:['1','3','4','1','1','1'] },
+  { name:'Bbm',  full:'Bb Minor',  type:'minor', frets:[-1,1,3,3,2,1],   fingers:['x','1','3','4','2','1'] },
+  { name:'C7',   full:'C Dom 7',   type:'7th',   frets:[-1,3,2,3,1,0],   fingers:['x','3','2','4','1','O'] },
+  { name:'D7',   full:'D Dom 7',   type:'7th',   frets:[-1,-1,0,2,1,2],  fingers:['x','x','O','2','1','3'] },
+  { name:'E7',   full:'E Dom 7',   type:'7th',   frets:[0,2,0,1,0,0],    fingers:['O','2','O','1','O','O'] },
+  { name:'F7',   full:'F Dom 7',   type:'7th',   frets:[1,3,1,2,1,1],    fingers:['1','3','1','2','1','1'] },
+  { name:'G7',   full:'G Dom 7',   type:'7th',   frets:[3,2,0,0,0,1],    fingers:['3','2','O','O','O','1'] },
+  { name:'A7',   full:'A Dom 7',   type:'7th',   frets:[-1,0,2,0,2,0],   fingers:['x','O','2','O','3','O'] },
+  { name:'B7',   full:'B Dom 7',   type:'7th',   frets:[-1,2,1,2,0,2],   fingers:['x','2','1','3','O','4'] },
+  { name:'Cmaj7',full:'C Major 7', type:'maj7',  frets:[-1,3,2,0,0,0],   fingers:['x','3','2','O','O','O'] },
+  { name:'Dmaj7',full:'D Major 7', type:'maj7',  frets:[-1,-1,0,2,2,2],  fingers:['x','x','O','1','1','1'] },
+  { name:'Emaj7',full:'E Major 7', type:'maj7',  frets:[0,2,1,1,0,0],    fingers:['O','3','1','2','O','O'] },
+  { name:'Fmaj7',full:'F Major 7', type:'maj7',  frets:[1,3,3,2,1,0],    fingers:['1','3','4','2','1','O'] },
+  { name:'Gmaj7',full:'G Major 7', type:'maj7',  frets:[3,2,0,0,0,2],    fingers:['2','1','O','O','O','3'] },
+  { name:'Amaj7',full:'A Major 7', type:'maj7',  frets:[-1,0,2,1,2,0],   fingers:['x','O','2','1','3','O'] },
+  { name:'Am7',  full:'A Minor 7', type:'m7',    frets:[-1,0,2,0,1,0],   fingers:['x','O','2','O','1','O'] },
+  { name:'Bm7',  full:'B Minor 7', type:'m7',    frets:[-1,2,4,2,3,2],   fingers:['x','1','3','1','2','1'] },
+  { name:'Dm7',  full:'D Minor 7', type:'m7',    frets:[-1,-1,0,2,1,1],  fingers:['x','x','O','2','1','1'] },
+  { name:'Em7',  full:'E Minor 7', type:'m7',    frets:[0,2,2,0,3,0],    fingers:['O','2','3','O','4','O'] },
+  { name:'Gm7',  full:'G Minor 7', type:'m7',    frets:[3,5,3,3,3,3],    fingers:['1','3','1','1','1','1'] },
+  { name:'Cm7',  full:'C Minor 7', type:'m7',    frets:[-1,3,5,3,4,3],   fingers:['x','1','3','1','2','1'] },
+  { name:'Edim', full:'E Dim',     type:'dim',   frets:[0,1,2,3,-1,-1],  fingers:['O','1','2','4','x','x'] },
+  { name:'Adim', full:'A Dim',     type:'dim',   frets:[-1,0,1,2,1,-1],  fingers:['x','O','1','3','2','x'] },
+  { name:'Bdim', full:'B Dim',     type:'dim',   frets:[-1,2,3,4,3,-1],  fingers:['x','1','2','4','3','x'] },
+  { name:'Caug', full:'C Aug',     type:'aug',   frets:[-1,3,2,1,1,0],   fingers:['x','3','2','1','1','O'] },
+  { name:'Eaug', full:'E Aug',     type:'aug',   frets:[0,3,2,1,1,0],    fingers:['O','3','2','1','1','O'] },
+  { name:'Gaug', full:'G Aug',     type:'aug',   frets:[3,2,1,0,0,-1],   fingers:['3','2','1','O','O','x'] },
+  { name:'Aaug', full:'A Aug',     type:'aug',   frets:[-1,0,3,2,2,1],   fingers:['x','O','4','2','3','1'] },
+  { name:'Csus2',full:'C Sus 2',   type:'sus',   frets:[-1,3,0,0,1,0],   fingers:['x','3','O','O','1','O'] },
+  { name:'Dsus2',full:'D Sus 2',   type:'sus',   frets:[-1,-1,0,2,3,0],  fingers:['x','x','O','1','3','O'] },
+  { name:'Dsus4',full:'D Sus 4',   type:'sus',   frets:[-1,-1,0,2,3,3],  fingers:['x','x','O','1','3','4'] },
+  { name:'Esus4',full:'E Sus 4',   type:'sus',   frets:[0,2,2,2,0,0],    fingers:['O','2','3','4','O','O'] },
+  { name:'Gsus4',full:'G Sus 4',   type:'sus',   frets:[3,3,0,0,1,1],    fingers:['2','3','O','O','1','1'] },
+  { name:'Asus4',full:'A Sus 4',   type:'sus',   frets:[-1,0,2,2,3,0],   fingers:['x','O','1','2','3','O'] },
+  { name:'Cadd9',full:'C Add 9',   type:'add9',  frets:[-1,3,2,0,3,0],   fingers:['x','3','2','O','4','O'] },
+  { name:'Dadd9',full:'D Add 9',   type:'add9',  frets:[-1,-1,0,2,3,0],  fingers:['x','x','O','1','3','O'] },
+  { name:'Gadd9',full:'G Add 9',   type:'add9',  frets:[3,2,0,2,0,3],    fingers:['2','1','O','3','O','4'] },
+  { name:'Aadd9',full:'A Add 9',   type:'add9',  frets:[-1,0,2,4,2,0],   fingers:['x','O','1','4','2','O'] },
+  { name:'D6',   full:'D 6th',     type:'6th',   frets:[-1,-1,0,2,0,2],  fingers:['x','x','O','1','O','2'] },
+  { name:'A6',   full:'A 6th',     type:'6th',   frets:[-1,0,2,2,2,2],   fingers:['x','O','1','1','1','1'] },
+  { name:'E6',   full:'E 6th',     type:'6th',   frets:[0,2,2,1,2,0],    fingers:['O','2','3','1','4','O'] },
+  { name:'G6',   full:'G 6th',     type:'6th',   frets:[3,2,0,0,0,0],    fingers:['2','1','O','O','O','O'] },
+  { name:'G9',   full:'G 9th',     type:'9th',   frets:[3,2,0,2,0,1],    fingers:['3','2','O','4','O','1'] },
+  { name:'A9',   full:'A 9th',     type:'9th',   frets:[-1,0,2,0,2,3],   fingers:['x','O','2','O','3','4'] },
+  { name:'E9',   full:'E 9th',     type:'9th',   frets:[0,2,0,1,0,2],    fingers:['O','2','O','1','O','3'] },
+  { name:'Am9',  full:'A Minor 9',  type:'m9',    frets:[-1,0,2,0,1,0],   fingers:['x','O','2','O','1','O'] },
+  { name:'Em9',  full:'E Minor 9',  type:'m9',    frets:[0,2,0,0,3,0],    fingers:['O','2','O','O','4','O'] },
+  { name:'Dm9',  full:'D Minor 9',  type:'m9',    frets:[-1,-1,0,2,1,0],  fingers:['x','x','O','2','1','O'] },
+  { name:'Gm9',  full:'G Minor 9',  type:'m9',    frets:[3,5,3,3,3,5],    fingers:['1','3','1','1','1','4'] },
+  { name:'Cm9',  full:'C Minor 9',  type:'m9',    frets:[-1,3,1,3,1,3],   fingers:['x','3','1','4','1','4'] },
+  { name:'Fm9',  full:'F Minor 9',  type:'m9',    frets:[1,3,1,1,1,3],    fingers:['1','3','1','1','1','4'] },
+  { name:'Bm9',  full:'B Minor 9',  type:'m9',    frets:[-1,2,4,2,3,4],   fingers:['x','1','3','1','2','4'] },
+  { name:'C7aug', full:'C Dom 7 Aug', type:'7aug', frets:[-1,3,2,3,1,0],  fingers:['x','3','2','4','1','O'] },
+  { name:'D7aug', full:'D Dom 7 Aug', type:'7aug', frets:[-1,-1,0,2,1,3],  fingers:['x','x','O','2','1','4'] },
+  { name:'E7aug', full:'E Dom 7 Aug', type:'7aug', frets:[0,3,2,1,1,0],    fingers:['O','4','3','1','2','O'] },
+  { name:'F7aug', full:'F Dom 7 Aug', type:'7aug', frets:[1,0,1,2,1,0],    fingers:['1','O','2','4','3','O'] },
+  { name:'G7aug', full:'G Dom 7 Aug', type:'7aug', frets:[3,2,1,0,0,3],    fingers:['3','2','1','O','O','4'] },
+  { name:'A7aug', full:'A Dom 7 Aug', type:'7aug', frets:[-1,0,3,2,2,3],   fingers:['x','O','3','1','2','4'] },
+  { name:'B7aug', full:'B Dom 7 Aug', type:'7aug', frets:[-1,2,1,2,0,3],   fingers:['x','2','1','3','O','4'] },
+  { name:'Bb7aug',full:'Bb Dom 7 Aug',type:'7aug', frets:[-1,1,0,1,3,2],   fingers:['x','1','O','2','4','3'] },
+  { name:'Dm7b5', full:'D Half Dim',  type:'m7b5', frets:[-1,-1,0,1,1,1],  fingers:['x','x','O','1','1','1'] },
+  { name:'Em7b5', full:'E Half Dim',  type:'m7b5', frets:[0,1,2,0,3,0],    fingers:['O','1','2','O','4','O'] },
+  { name:'Am7b5', full:'A Half Dim',  type:'m7b5', frets:[-1,0,1,2,1,3],   fingers:['x','O','1','3','2','4'] },
+  { name:'Bm7b5', full:'B Half Dim',  type:'m7b5', frets:[-1,2,3,2,3,-1],  fingers:['x','1','3','2','4','x'] },
+  { name:'Cm7b5', full:'C Half Dim',  type:'m7b5', frets:[-1,3,4,3,4,-1],  fingers:['x','1','3','2','4','x'] },
+  { name:'Fm7b5', full:'F Half Dim',  type:'m7b5', frets:[1,2,3,1,4,1],    fingers:['1','2','3','1','4','1'] },
+  { name:'Gm7b5', full:'G Half Dim',  type:'m7b5', frets:[3,4,5,3,6,3],    fingers:['1','2','3','1','4','1'] },
+  { name:'Bbm7b5',full:'Bb Half Dim', type:'m7b5', frets:[-1,1,2,1,2,-1],  fingers:['x','1','3','2','4','x'] },
+];
+
+// Piano chords: intervals from root (semitones)
+const PIANO_CHORD_INTERVALS = {
+  major: [0,4,7],
+  minor: [0,3,7],
+  '7th':  [0,4,7,10],
+  maj7:  [0,4,7,11],
+  m7:    [0,3,7,10],
+  dim:   [0,3,6],
+  aug:   [0,4,8],
+  sus:   [0,5,7],   // sus4 default
+  add9:  [0,4,7,14],
+  '6th': [0,4,7,9],
+  '9th': [0,4,7,10,14],
+  m9:   [0,3,7,10,14],
+  m7b5: [0,3,6,10],
+  '7aug': [0,4,8,10],
+};
+
+const PIANO_CHORDS = [];
+const NOTES_ALL = ['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+const NOTE_SEMITONES = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11};
+const CHORD_SUFFIX = { major:'', minor:'m', '7th':'7', maj7:'maj7', m7:'m7', dim:'dim', aug:'aug', sus:'sus4', add9:'add9', '6th':'6', '9th':'9', m9:'m9', m7b5:'m7b5', '7aug':'7+' };
+const CHORD_FULL = { major:'Major', minor:'Minor', '7th':'Dom 7', maj7:'Major 7', m7:'Minor 7', dim:'Diminished', aug:'Augmented', sus:'Sus 4', add9:'Add 9', '6th':'6th', '9th':'9th', m9:'Minor 9', m7b5:'Half Dim (m7b5)', '7aug':'Dom 7 Aug' };
+
+NOTES_ALL.forEach(root => {
+  Object.keys(PIANO_CHORD_INTERVALS).forEach(type => {
+    const suffix = CHORD_SUFFIX[type];
+    const name = root + suffix;
+    const rootSemi = NOTE_SEMITONES[root];
+    const intervals = PIANO_CHORD_INTERVALS[type];
+    PIANO_CHORDS.push({
+      name, full: `${root} ${CHORD_FULL[type]}`, type,
+      rootSemi, intervals
+    });
+  });
+});
+
+// ─── PROGRESSIONS ───────────────────────────────────────────────────
+const PROGRESSIONS = [
+  { title:'The Island Classic', genre:'Pop / Reggae',   chords:['C','G','Am','F'],   desc:'The most popular progression in pop music. Works for hundreds of songs.' },
+  { title:'Blues Feel',         genre:'Blues / Soul',   chords:['C7','F7','C7','G7'],desc:'A simple 12-bar blues shape. Swing rhythm gives it an authentic feel.' },
+  { title:'Jazzy Stroll',       genre:'Jazz / Bossa',   chords:['Cmaj7','Am','Dm7','G7'], desc:'Smooth and sophisticated. Perfect for slow, fingerpicked patterns.' },
+  { title:'Sad but Beautiful',  genre:'Ballad',         chords:['Am','F','C','G'],   desc:'A minor key twist on the classic. Great for emotional songs.' },
+  { title:'50s Doo-Wop',        genre:'Oldies / Rock',  chords:['C','Am','F','G'],   desc:'Timeless and fun. Strum with an upbeat rhythm for that retro bounce.' },
+  { title:'Quick Resolution',   genre:'Folk / Country', chords:['G','C','D','G'],    desc:'A simple 3-chord progression. Great for beginners!' },
+];
+
+// ─── SCALES ─────────────────────────────────────────────────────────
+const SCALE_NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const SCALE_DISPLAY = {'C#':'C#','D#':'D#','F#':'F#','G#':'G#','A#':'Bb'};
+const SCALE_TYPES = [
+  { id:'major',      name:'Major',           intervals:[0,2,4,5,7,9,11] },
+  { id:'minor',      name:'Nat. Minor',      intervals:[0,2,3,5,7,8,10] },
+  { id:'harm_minor', name:'Harm. Minor',     intervals:[0,2,3,5,7,8,11] },
+  { id:'mel_minor',  name:'Mel. Minor',      intervals:[0,2,3,5,7,9,11] },
+  { id:'pent_maj',   name:'Major Pent.',     intervals:[0,2,4,7,9] },
+  { id:'pent_min',   name:'Minor Pent.',     intervals:[0,3,5,7,10] },
+  { id:'blues',      name:'Blues',           intervals:[0,3,5,6,7,10] },
+  { id:'dorian',     name:'Dorian',          intervals:[0,2,3,5,7,9,10] },
+  { id:'phrygian',   name:'Phrygian',        intervals:[0,1,3,5,7,8,10] },
+  { id:'lydian',     name:'Lydian',          intervals:[0,2,4,6,7,9,11] },
+  { id:'mixolydian', name:'Mixolydian',      intervals:[0,2,4,5,7,9,10] },
+  { id:'locrian',    name:'Locrian',         intervals:[0,1,3,5,6,8,10] },
+  { id:'chromatic',  name:'Chromatic',       intervals:[0,1,2,3,4,5,6,7,8,9,10,11] },
+];
+
+const UKE_OPEN  = [7,0,4,9];   // G C E A
+const GTR_OPEN_PITCHES = [4,9,2,7,11,4]; // E A D G B E
+const BASS_OPEN_PITCHES = [4,9,2,7]; // E A D G
+const BASS_NAMES = ['E','A','D','G'];
+
+let selectedScaleRoot = 0;
+let selectedScaleType = 'major';
+
+// ─── CHORD FILTER STATE ─────────────────────────────────────────────
+let activeFilters = new Set();
+let activeRoot = 'all';
+let currentSearch = '';
+
+// ─── INSTRUMENT SWITCH ───────────────────────────────────────────────
+function setInstrument(inst, el) {
+  currentInstrument = inst;
+  document.querySelectorAll('.inst-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  // Reset filters
+  activeFilters.clear();
+  activeRoot = 'all';
+  currentSearch = '';
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.pill[data-type]').forEach(p => p.classList.toggle('active', p.dataset.type === 'all'));
+  document.querySelectorAll('.pill[data-root]').forEach(p => p.classList.toggle('active', p.dataset.root === 'all'));
+  renderChords();
+  renderScale();
+  if (document.getElementById('finder').classList.contains('active')) { openFinder(); }
+}
+
+function currentChords() {
+  if (currentInstrument === 'ukulele') return UKE_CHORDS;
+  if (currentInstrument === 'guitar')  return GTR_CHORDS;
+  if (currentInstrument === 'bass')    return BASS_CHORDS;
+  return PIANO_CHORDS;
+}
+
+// ─── CHORD FILTERS ───────────────────────────────────────────────────
+function filterChords() {
+  currentSearch = document.getElementById('searchInput').value.toLowerCase();
+  renderChords();
+}
+
+function filterType(type, el) {
+  if (type === 'all') {
+    activeFilters.clear();
+  } else {
+    activeFilters.has(type) ? activeFilters.delete(type) : activeFilters.add(type);
+  }
+  document.querySelectorAll('.pill[data-type]').forEach(p => {
+    const t = p.dataset.type;
+    p.classList.toggle('active', t === 'all' ? activeFilters.size === 0 : activeFilters.has(t));
+  });
+  renderChords();
+}
+
+function filterRoot(root, el) {
+  activeRoot = root;
+  document.querySelectorAll('.pill[data-root]').forEach(p => p.classList.toggle('active', p.dataset.root === root));
+  renderChords();
+}
+
+function matchesRoot(name, root) {
+  if (root === 'all') return true;
+  if (!name.startsWith(root)) return false;
+  const next = name[root.length] || '';
+  return !/[A-Gb#]/.test(next);
+}
+
+// ─── RENDER CHORDS ───────────────────────────────────────────────────
+function renderChords() {
+  const grid = document.getElementById('chordGrid');
+  const chords = currentChords();
+  const filtered = chords.filter(c => {
+    const matchSearch = c.name.toLowerCase().includes(currentSearch) || c.full.toLowerCase().includes(currentSearch);
+    // Smart type matching: single filter = exact type match
+    // Multiple filters = also include combined types that satisfy all selected qualities
+    const TYPE_QUALITIES = {
+      major: ['major','maj7','add9','6th','sus','aug'],
+      minor: ['minor','m7','m9','m7b5'],
+      '7th': ['7th','m7','maj7','m9','7aug'],
+      maj7:  ['maj7'],
+      m7:    ['m7','m9'],
+      dim:   ['dim','m7b5'],
+      aug:   ['aug','7aug'],
+      sus:   ['sus'],
+      add9:  ['add9','m9'],
+      '6th': ['6th'],
+      '9th': ['9th','m9'],
+      m7b5: ['m7b5'],
+      '7aug': ['7aug'],
+    };
+    let matchType;
+    if (activeFilters.size === 0) {
+      matchType = true;
+    } else if (activeFilters.size === 1) {
+      matchType = activeFilters.has(c.type);
+    } else {
+      // Multi-select: chord must satisfy ALL selected qualities
+      matchType = [...activeFilters].every(f => {
+        const q = TYPE_QUALITIES[f] || [f];
+        return q.includes(c.type);
+      });
+    }
+    const matchRoot   = matchesRoot(c.name, activeRoot);
+    return matchSearch && matchType && matchRoot;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-results">No chords found 🎵</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c => `
+    <div class="chord-card" onclick="showDetail('${c.name}')">
+      <div class="chord-name">${c.name}</div>
+      <div class="chord-type">${c.full}</div>
+      ${renderChordPreview(c)}
+    </div>
+  `).join('');
+}
+
+function renderChordPreview(c) {
+  if (currentInstrument === 'piano') {
+    return buildPianoSVG(c, 90, 50, true);
+  } else {
+    const stringCount = currentInstrument === 'guitar' ? 6 : 4;
+    return `<svg class="diagram" viewBox="0 0 100 120">${buildFretDiagram(c, 100, 120, 12, stringCount)}</svg>`;
+  }
+}
+
+// ─── FRET DIAGRAM (uke + guitar) ─────────────────────────────────────
+function buildFretDiagram(chord, W, H, fontSize, stringCount) {
+  const frets = 4;
+  const ml = stringCount === 6 ? 14 : 18, mr = 8, mt = 24, mb = 20;
+  const sw = (W - ml - mr) / (stringCount - 1);
+  const fh = (H - mt - mb) / frets;
+  const r  = Math.min(sw * 0.3, 7);
+
+  const nonMute   = chord.frets.filter(f => f >= 0);
+  const minFret   = Math.min(...nonMute.filter(f => f > 0), 99);
+  const maxFret   = Math.max(...nonMute);
+  const startFret = maxFret <= frets ? 1 : minFret;
+
+  let svg = '';
+
+  // Nut or position marker
+  if (startFret === 1) {
+    svg += `<rect x="${ml - r}" y="${mt - 4}" width="${(stringCount-1)*sw + r*2}" height="5" rx="2" fill="#1a1b2e"/>`;
+  } else {
+    svg += `<text x="${ml - 4}" y="${mt + fh*0.6}" text-anchor="end" font-size="8" fill="#8b8fa8" font-family="Lato">${startFret}fr</text>`;
+  }
+
+  // Fret lines
+  for (let f = 0; f <= frets; f++) {
+    const y = mt + f * fh;
+    svg += `<line x1="${ml}" y1="${y}" x2="${ml+(stringCount-1)*sw}" y2="${y}" stroke="#c8cad8" stroke-width="0.8" opacity="0.5"/>`;
+  }
+
+  // Strings
+  for (let s = 0; s < stringCount; s++) {
+    const x = ml + s * sw;
+    svg += `<line x1="${x}" y1="${mt}" x2="${x}" y2="${mt+frets*fh}" stroke="#c8cad8" stroke-width="1.2"/>`;
+  }
+
+  // Dots, open, mute
+  chord.frets.forEach((fret, s) => {
+    const x = ml + s * sw;
+    if (fret === -1) {
+      svg += `<text x="${x}" y="${mt-8}" text-anchor="middle" font-size="9" fill="#c8cad8">×</text>`;
+    } else if (fret === 0) {
+      svg += `<circle cx="${x}" cy="${mt-8}" r="${r*0.75}" fill="none" stroke="#8b8fa8" stroke-width="1.2"/>`;
+    } else {
+      const relFret = fret - startFret + 1;
+      const cy = mt + (relFret - 0.5) * fh;
+      svg += `<circle cx="${x}" cy="${cy}" r="${r}" fill="#1a1b2e"/>`;
+      const label = chord.fingers[s];
+      if (label && label !== 'O' && label !== 'x') {
+        svg += `<text x="${x}" y="${cy+3.5}" text-anchor="middle" font-size="${fontSize*0.5}" fill="white" font-family="Lato" font-weight="700">${label}</text>`;
+      }
+    }
+  });
+
+  // String names
+  const names = currentInstrument === 'guitar' ? GTR_NAMES : currentInstrument === 'bass' ? BASS_NAMES : ['G','C','E','A'];
+  names.forEach((n, s) => {
+    svg += `<text x="${ml+s*sw}" y="${mt+frets*fh+11}" text-anchor="middle" font-size="7" fill="#8b8fa8" font-family="Lato">${n}</text>`;
+  });
+
+  return svg;
+}
+
+// ─── PIANO DIAGRAM ───────────────────────────────────────────────────
+// Shows one octave + a few extra keys; highlights chord tones
+function buildPianoSVG(chord, W, H, isPreview) {
+  const octaveKeys = 15; // C to D (next octave +2)
+  // White key pattern in an octave: C D E F G A B = indices 0,2,4,5,7,9,11
+  const WHITE = [0,2,4,5,7,9,11]; // semitones that are white keys
+  const BLACK_POS = {1:0, 3:1, 6:3, 8:4, 10:5}; // semitone → position between whites
+
+  const intervals = chord.intervals || [0];
+  const rootSemi  = chord.rootSemi !== undefined ? chord.rootSemi : (NOTE_SEMITONES[chord.name.replace(/[^A-Ga-g#b]/g,'')] || 0);
+
+  // Determine active semitones (mod 12)
+  const activeSet = new Set(intervals.map(i => (rootSemi + i) % 12));
+
+  const numWhites = 8; // C D E F G A B C
+  const ww = W / numWhites;
+  const bw = ww * 0.6;
+  const wh = H;
+  const bh = H * 0.6;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="${isPreview ? '100%' : '100%'}" style="display:block">`;
+
+  // White keys
+  WHITE.concat([12]).forEach((semi, i) => {
+    const pitch = (rootSemi + 0 + semi) % 12; // we show from C, not from root — map differently
+    // Actually: show C-based octave, highlight notes in chord
+    const absSemi = semi; // 0=C,2=D,4=E,5=F,7=G,9=A,11=B,12=C
+    const noteSemi = absSemi % 12;
+    const isActive = activeSet.has(noteSemi);
+    const isRoot   = noteSemi === rootSemi % 12;
+    const fill = isActive || isRoot ? '#5b4fcf' : 'white';
+    const textFill = (isRoot || isActive) ? 'white' : '#ccc';
+    const noteName = SCALE_NOTES[noteSemi];
+    const label = SCALE_DISPLAY[noteName] || noteName;
+    svg += `<rect x="${i*ww+0.5}" y="0.5" width="${ww-1}" height="${wh-1}" rx="3" fill="${fill}" stroke="#c8cad8" stroke-width="1"/>`;
+    if (isActive || isPreview === false) {
+      svg += `<text x="${i*ww+ww/2}" y="${wh-5}" text-anchor="middle" font-size="${ww*0.38}" fill="${textFill}" font-family="Lato" font-weight="700">${isActive ? label : ''}</text>`;
+    }
+  });
+
+  // Black keys
+  const blackSlots = [0,1,3,4,5]; // positions between whites (0-indexed between white keys)
+  const blackSemis = [1,3,6,8,10];
+  blackSlots.forEach((slot, i) => {
+    const noteSemi = blackSemis[i];
+    const isActive = activeSet.has(noteSemi);
+    const isRoot   = noteSemi === rootSemi % 12;
+    const fill = (isRoot || isActive) ? '#5b4fcf' : '#1a1b2e';
+    const x = (slot + 1) * ww - bw / 2;
+    svg += `<rect x="${x}" y="0.5" width="${bw}" height="${bh}" rx="2" fill="${fill}" stroke="${isActive?'#5b4fcf':'#0f1020'}" stroke-width="0.5"/>`;
+    if (isActive) {
+      const noteName = SCALE_NOTES[noteSemi];
+      const label = SCALE_DISPLAY[noteName] || noteName;
+      svg += `<text x="${x+bw/2}" y="${bh-4}" text-anchor="middle" font-size="${bw*0.42}" fill="white" font-family="Lato" font-weight="700">${label}</text>`;
+    }
+  });
+
+  svg += '</svg>';
+  return svg;
+}
+
+// ─── INVERSIONS ──────────────────────────────────────────────────────
+// Chord tone semitones (intervals from chord definition)
+const CHORD_TYPE_INTERVALS = {
+  major:[0,4,7], minor:[0,3,7], '7th':[0,4,7,10], maj7:[0,4,7,11],
+  m7:[0,3,7,10], dim:[0,3,6], aug:[0,4,8], sus:[0,5,7], add9:[0,4,7,14],
+  '6th':[0,4,7,9], '9th':[0,4,7,10,14], m9:[0,3,7,10,14], m7b5:[0,3,6,10],
+  '7aug':[0,4,8,10],
+};
+
+// Ordinal labels
+const INV_NAMES = ['Root Position','1st Inversion','2nd Inversion','3rd Inversion','4th Inversion'];
+
+let currentDetailChord = null;
+let currentInversionIdx = 0;
+let currentInversions = [];
+
+function getChordTones(chord) {
+  // Use piano intervals if available, else derive from type
+  if (chord.intervals) return chord.intervals.map(i => (chord.rootSemi + i) % 12);
+  const intervals = CHORD_TYPE_INTERVALS[chord.type] || [0,4,7];
+  // Detect root from chord name
+  const rootMatch = chord.name.match(/^([A-G][#b]?)/);
+  const rootName  = rootMatch ? rootMatch[1] : 'C';
+  const rootSemi  = {C:0,'C#':1,D:2,'Eb':3,E:4,F:5,'F#':6,G:7,'Ab':8,A:9,'Bb':10,B:11}[rootName] || 0;
+  return intervals.map(i => (rootSemi + i) % 12);
+}
+
+// Generate piano inversions: rotate bass note through chord tones
+function getPianoInversions(chord) {
+  const tones = getChordTones(chord);
+  const uniqueTones = [...new Set(tones.map(t => t % 12))];
+  return uniqueTones.map((_, idx) => {
+    const rotated = [...uniqueTones.slice(idx), ...uniqueTones.slice(0, idx)];
+    return { tones: rotated, bassNote: rotated[0] };
+  });
+}
+
+// Generate fretboard inversions: find voicings where different chord tone is lowest
+function getFretInversions(chord) {
+  const tones = getChordTones(chord);
+  const uniqueTones = [...new Set(tones.map(t => t % 12))];
+  const stringCount = currentInstrument === 'guitar' ? 6 : 4;
+  const openPitches = currentInstrument === 'guitar' ? GTR_OPEN_PITCHES : currentInstrument === 'bass' ? BASS_OPEN_PITCHES : UKE_OPEN;
+
+  // Root position = original chord
+  const inversions = [{ frets: chord.frets, fingers: chord.fingers, bassNote: uniqueTones[0], label: 'Root Position' }];
+
+  // For each other chord tone as bass, find a simple voicing
+  for (let inv = 1; inv < uniqueTones.length; inv++) {
+    const bassNote = uniqueTones[inv];
+    // Find lowest string that can play this bass note at a reasonable fret
+    let bestFrets = null;
+    for (let bassSt = 0; bassSt < stringCount; bassSt++) {
+      const openP = openPitches[bassSt] % 12;
+      let bassFret = (bassNote - openP + 12) % 12;
+      if (bassFret > 5) bassFret += 12 - 12; // prefer open or low frets
+      if (bassFret > 7) continue;
+
+      // Build remaining strings above bass
+      const fretArr = new Array(stringCount).fill(-1);
+      fretArr[bassSt] = bassFret;
+      // Mute strings below bass
+      for (let s = 0; s < bassSt; s++) fretArr[s] = -1;
+      // Fill remaining strings with chord tones
+      for (let s = bassSt + 1; s < stringCount; s++) {
+        const openP2 = openPitches[s] % 12;
+        let bestFret = -1, bestPrio = 99;
+        for (let f = 0; f <= 5; f++) {
+          const p = (openP2 + f) % 12;
+          if (uniqueTones.includes(p)) {
+            const prio = uniqueTones.indexOf(p);
+            if (prio < bestPrio) { bestPrio = prio; bestFret = f; }
+          }
+        }
+        fretArr[s] = bestFret >= 0 ? bestFret : 0;
+        // Verify it's a chord tone
+        if (!uniqueTones.includes((openPitches[s] + fretArr[s]) % 12)) fretArr[s] = -1;
+      }
+      bestFrets = fretArr;
+      break;
+    }
+    if (bestFrets) {
+      inversions.push({
+        frets: bestFrets,
+        fingers: bestFrets.map(f => f < 0 ? 'x' : f === 0 ? 'O' : String(f)),
+        bassNote,
+        label: INV_NAMES[inv] || `${inv}th Inversion`
+      });
+    }
+  }
+  return inversions;
+}
+
+// ─── SHOW DETAIL ─────────────────────────────────────────────────────
+function showDetail(name) {
+  const chords = currentChords();
+  const chord = chords.find(c => c.name === name);
+  if (!chord) return;
+
+  currentDetailChord = chord;
+  currentInversionIdx = 0;
+
+  if (currentInstrument === 'piano') {
+    currentInversions = getPianoInversions(chord);
+  } else {
+    currentInversions = getFretInversions(chord);
+  }
+
+  document.getElementById('detailName').textContent = chord.name;
+  document.getElementById('detailFull').textContent = chord.full;
+  document.getElementById('detailOverlay').classList.add('open');
+  renderDetailInversion();
+}
+
+function stepInversion(dir) {
+  currentInversionIdx = Math.max(0, Math.min(currentInversions.length - 1, currentInversionIdx + dir));
+  renderDetailInversion();
+}
+
+function renderDetailInversion() {
+  const inv = currentInversions[currentInversionIdx];
+  const chord = currentDetailChord;
+  const wrap = document.getElementById('detailDiagramWrap');
+  const fingersEl = document.getElementById('detailFingers');
+
+  // Update nav
+  document.getElementById('invLabelName').textContent = inv ? (inv.label || INV_NAMES[currentInversionIdx]) : INV_NAMES[currentInversionIdx];
+  document.getElementById('invPrev').disabled = currentInversionIdx === 0;
+  document.getElementById('invNext').disabled = currentInversionIdx >= currentInversions.length - 1;
+  document.getElementById('invNav').style.display = currentInversions.length > 1 ? 'flex' : 'none';
+
+  if (currentInstrument === 'piano') {
+    // For piano, show inversion by highlighting rotated tones
+    const invChord = { ...chord, intervals: null, rootSemi: inv.bassNote, intervals: currentInversions[currentInversionIdx].tones.map((t,i,a) => (t - a[0] + 12) % 12) };
+    wrap.innerHTML = `<div style="width:100%;overflow-x:auto">${buildPianoSVG(invChord, 280, 90, false)}</div>`;
+    fingersEl.innerHTML = '';
+  } else {
+    const displayChord = inv ? { ...chord, frets: inv.frets, fingers: inv.fingers } : chord;
+    const stringCount = currentInstrument === 'guitar' ? 6 : 4;
+    const svgEl = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svgEl.setAttribute('viewBox','0 0 120 165');
+    svgEl.style.width = '60%';
+    svgEl.innerHTML = buildFretDiagram(displayChord, 120, 165, 14, stringCount);
+    wrap.innerHTML = '';
+    wrap.appendChild(svgEl);
+
+    const labels = currentInstrument === 'guitar' ? GTR_NAMES : currentInstrument === 'bass' ? BASS_NAMES : ['G','C','E','A'];
+    fingersEl.innerHTML = displayChord.frets.map((f, i) => `
+      <div class="finger-label">
+        <span>${f === -1 ? '×' : f === 0 ? 'O' : f}</span>
+        ${labels[i]}
+      </div>
+    `).join('');
+  }
+}
+
+function closeDetail(e) {
+  if (!e || e.target === document.getElementById('detailOverlay')) {
+    document.getElementById('detailOverlay').classList.remove('open');
+  }
+}
+
+// ─── PAGE SWITCH ─────────────────────────────────────────────────────
+function showPage(id, tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tab.classList.add('active');
+}
+
+// ─── PROGRESSIONS ────────────────────────────────────────────────────
+function renderProgressions() {
+  document.getElementById('progList').innerHTML = PROGRESSIONS.map(p => `
+    <div class="prog-card">
+      <div class="prog-title">${p.title}</div>
+      <div class="prog-genre">${p.genre}</div>
+      <div class="prog-chords">
+        ${p.chords.map((c,i) => `
+          <div class="prog-chord-badge" onclick="showDetail('${c}')">${c}</div>
+          ${i < p.chords.length-1 ? '<span class="arrow">→</span>' : ''}
+        `).join('')}
+      </div>
+      <div class="prog-desc">${p.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ─── SCALES ──────────────────────────────────────────────────────────
+function initScales() {
+  document.getElementById('scaleRootPills').innerHTML = SCALE_NOTES.map((n,i) => {
+    const label = SCALE_DISPLAY[n] || n;
+    return `<button class="pill${i===0?' active':''}" onclick="setScaleRoot(${i},this)">${label}</button>`;
+  }).join('');
+
+  document.getElementById('scaleTypePills').innerHTML = SCALE_TYPES.map(s => `
+    <button class="pill${s.id==='major'?' active':''}" onclick="setScaleType('${s.id}',this)">${s.name}</button>
+  `).join('');
+
+  renderScale();
+}
+
+function setScaleRoot(idx, el) {
+  selectedScaleRoot = idx;
+  document.querySelectorAll('#scaleRootPills .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderScale();
+}
+
+function setScaleType(id, el) {
+  selectedScaleType = id;
+  document.querySelectorAll('#scaleTypePills .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderScale();
+}
+
+function renderScale() {
+  const scale = SCALE_TYPES.find(s => s.id === selectedScaleType);
+  if (!scale) return;
+  const scaleNotes = scale.intervals.map(i => (selectedScaleRoot + i) % 12);
+  const rootName   = SCALE_NOTES[selectedScaleRoot];
+  const rootLabel  = SCALE_DISPLAY[rootName] || rootName;
+
+  document.getElementById('scaleInfo').textContent = `${rootLabel} ${scale.name}`;
+
+  document.getElementById('scaleNotesRow').innerHTML = scaleNotes.map(n => {
+    const label = SCALE_DISPLAY[SCALE_NOTES[n]] || SCALE_NOTES[n];
+    return `<div class="scale-note-badge${n===selectedScaleRoot?' root':''}">${label}</div>`;
+  }).join('');
+
+  const wrap = document.getElementById('scaleDiagramWrap');
+  if (currentInstrument === 'piano') {
+    wrap.innerHTML = `<div class="piano-wrap">${buildPianoScaleSVG(scaleNotes, 300, 90)}</div>`;
+  } else {
+    const openPitches = currentInstrument === 'guitar' ? GTR_OPEN_PITCHES : currentInstrument === 'bass' ? BASS_OPEN_PITCHES : UKE_OPEN;
+    const strNames    = currentInstrument === 'guitar' ? GTR_NAMES : currentInstrument === 'bass' ? BASS_NAMES : ['G','C','E','A'];
+    const fbH = currentInstrument==='guitar'?150:118;
+    const fbW = 28 + 12*52 + 12;
+    wrap.innerHTML = `<div class="fretboard-wrap" style="overflow-x:auto"><svg viewBox="0 0 ${fbW} ${fbH}" width="${fbW}px" style="min-width:${fbW}px;display:block">${buildScaleFretboard(scaleNotes, openPitches, strNames)}</svg></div>`;
+  }
+}
+
+function buildPianoScaleSVG(scaleNotes, W, H) {
+  const activeSet = new Set(scaleNotes);
+  const WHITE = [0,2,4,5,7,9,11];
+  const numWhites = 8;
+  const ww = W / numWhites;
+  const bw = ww * 0.6;
+  const wh = H;
+  const bh = H * 0.6;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">`;
+  WHITE.concat([12]).forEach((semi, i) => {
+    const noteSemi = semi % 12;
+    const isActive = activeSet.has(noteSemi);
+    const isRoot   = noteSemi === selectedScaleRoot;
+    const fill = isActive || isRoot ? '#5b4fcf' : 'white';
+    const textFill = (isRoot||isActive) ? 'white' : '#ccc';
+    const label = SCALE_DISPLAY[SCALE_NOTES[noteSemi]] || SCALE_NOTES[noteSemi];
+    svg += `<rect x="${i*ww+0.5}" y="0.5" width="${ww-1}" height="${wh-1}" rx="3" fill="${fill}" stroke="#c8cad8" stroke-width="1"/>`;
+    svg += `<text x="${i*ww+ww/2}" y="${wh-5}" text-anchor="middle" font-size="${ww*0.38}" fill="${textFill}" font-family="Lato" font-weight="700">${isActive?label:''}</text>`;
+  });
+
+  const blackSlots = [0,1,3,4,5];
+  const blackSemis = [1,3,6,8,10];
+  blackSlots.forEach((slot,i) => {
+    const noteSemi = blackSemis[i];
+    const isActive = activeSet.has(noteSemi);
+    const isRoot   = noteSemi === selectedScaleRoot;
+    const fill = (isRoot || isActive) ? '#5b4fcf' : '#1a1b2e';
+    const x = (slot+1)*ww - bw/2;
+    const label = SCALE_DISPLAY[SCALE_NOTES[noteSemi]] || SCALE_NOTES[noteSemi];
+    svg += `<rect x="${x}" y="0.5" width="${bw}" height="${bh}" rx="2" fill="${fill}" stroke="${isActive?'#5b4fcf':'#0f1020'}" stroke-width="0.5"/>`;
+    if (isActive) svg += `<text x="${x+bw/2}" y="${bh-4}" text-anchor="middle" font-size="${bw*0.42}" fill="white" font-family="Lato" font-weight="700">${label}</text>`;
+  });
+
+  svg += '</svg>';
+  return svg;
+}
+
+function buildScaleFretboard(scaleNotes, openPitches, strNames) {
+  // Show frets 0-12 but in a scrollable wider view
+  const FRET_COUNT = 12;
+  const FRET_W = 52; // px per fret — wider so dots don't crowd
+  const W = ml_s + FRET_COUNT * FRET_W + 12;
+  var ml_s = 28, mr_s = 12, mt_s = 22, mb_s = 22;
+  const H = strNames.length === 6 ? 150 : 118;
+  const fw = FRET_COUNT * FRET_W;
+  const fh = (H - mt_s - mb_s) / (openPitches.length - 1);
+  const r = 11;
+
+  let out = '';
+
+  // Fret position markers (dots between strings)
+  [3,5,7,10,12].forEach(f => {
+    const cx = ml_s + (f-0.5)*FRET_W;
+    const cy = mt_s + fh*(openPitches.length-1)/2;
+    if (f === 12) {
+      out += `<circle cx="${cx-6}" cy="${cy}" r="3" fill="#e8e9f0"/>`;
+      out += `<circle cx="${cx+6}" cy="${cy}" r="3" fill="#e8e9f0"/>`;
+    } else {
+      out += `<circle cx="${cx}" cy="${cy}" r="3" fill="#e8e9f0"/>`;
+    }
+  });
+
+  // Nut
+  out += `<rect x="${ml_s}" y="${mt_s - 4}" width="5" height="${fh*(openPitches.length-1)+8}" rx="2.5" fill="#1a1b2e"/>`;
+
+  // Fret lines
+  for (let f = 1; f <= FRET_COUNT; f++) {
+    const x = ml_s + f * FRET_W;
+    out += `<line x1="${x}" y1="${mt_s}" x2="${x}" y2="${mt_s+fh*(openPitches.length-1)}" stroke="#d8dae6" stroke-width="1.2"/>`;
+    out += `<text x="${ml_s+(f-0.5)*FRET_W}" y="${H-5}" text-anchor="middle" font-size="9" fill="#b8bcc8" font-family="Nunito Sans,sans-serif" font-weight="600">${f}</text>`;
+  }
+
+  // Strings & dots
+  openPitches.forEach((open, si) => {
+    const y = mt_s + si * fh;
+    out += `<line x1="${ml_s}" y1="${y}" x2="${ml_s+fw}" y2="${y}" stroke="#d8dae6" stroke-width="1.5"/>`;
+    out += `<text x="${ml_s-7}" y="${y+4}" text-anchor="end" font-size="10" fill="#8b8fa8" font-family="Nunito Sans,sans-serif" font-weight="700">${strNames[si]}</text>`;
+
+    // Open string
+    const openPitch = open % 12;
+    if (scaleNotes.includes(openPitch)) {
+      const isRoot = openPitch === selectedScaleRoot;
+      const label  = SCALE_DISPLAY[SCALE_NOTES[openPitch]] || SCALE_NOTES[openPitch];
+      out += `<circle cx="${ml_s-20}" cy="${y}" r="${r-2}" fill="${isRoot?'#1a1b2e':'#5b4fcf'}"/>`;
+      out += `<text x="${ml_s-20}" y="${y+3.5}" text-anchor="middle" font-size="7.5" fill="white" font-family="Nunito Sans,sans-serif" font-weight="700">${label}</text>`;
+    }
+
+    for (let f = 1; f <= FRET_COUNT; f++) {
+      const pitch = (open + f) % 12;
+      if (scaleNotes.includes(pitch)) {
+        const cx = ml_s + (f-0.5)*FRET_W;
+        const isRoot = pitch === selectedScaleRoot;
+        const label  = SCALE_DISPLAY[SCALE_NOTES[pitch]] || SCALE_NOTES[pitch];
+        out += `<circle cx="${cx}" cy="${y}" r="${r}" fill="${isRoot?'#1a1b2e':'#5b4fcf'}"/>`;
+        out += `<text x="${cx}" y="${y+4}" text-anchor="middle" font-size="8" fill="white" font-family="Nunito Sans,sans-serif" font-weight="700">${label}</text>`;
+      }
+    }
+  });
+
+  return out;
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────
+renderChords();
+renderProgressions();
+initScales();
+
+// ─── CHORD FINDER ────────────────────────────────────────────────────
+let finderSelectedNotes = new Set(); // semitone values 0-11
+
+const FINDER_NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FINDER_DISPLAY    = {'C#':'C#','D#':'D#','F#':'F#','G#':'G#','A#':'Bb'};
+
+// All chord type intervals for matching
+const FINDER_TYPE_INTERVALS = {
+  major:[0,4,7], minor:[0,3,7], '7th':[0,4,7,10], maj7:[0,4,7,11],
+  m7:[0,3,7,10], dim:[0,3,6], aug:[0,4,8], sus:[0,5,7],
+  add9:[0,4,7,2], '6th':[0,4,7,9], '9th':[0,4,7,10,2],
+  m9:[0,3,7,10,2], m7b5:[0,3,6,10], '7aug':[0,4,8,10],
+};
+
+const FINDER_TYPE_NAMES = {
+  major:'Major', minor:'Minor', '7th':'Dom 7', maj7:'Major 7',
+  m7:'Minor 7', dim:'Diminished', aug:'Augmented', sus:'Sus 4',
+  add9:'Add 9', '6th':'6th', '9th':'9th', m9:'Minor 9',
+  m7b5:'Half Dim', '7aug':'Dom 7 Aug',
+};
+
+const FINDER_ROOT_NAMES = ['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+
+function openFinder() {
+  finderSelectedNotes.clear();
+  finderTappedPositions = new Set();
+  renderFinderDiagram();
+  updateFinderResults();
+}
+
+function closeFinder() {}
+
+function clearFinderNotes() {
+  finderSelectedNotes.clear();
+  finderTappedPositions.clear();
+  renderFinderDiagram();
+  updateFinderResults();
+}
+
+function toggleFinderNote(semi) {
+  semi = semi % 12;
+  if (finderSelectedNotes.has(semi)) {
+    finderSelectedNotes.delete(semi);
+  } else {
+    finderSelectedNotes.add(semi);
+  }
+  renderFinderDiagram();
+  updateFinderResults();
+}
+
+function renderFinderDiagram() {
+  const wrap = document.getElementById('finderDiagramWrap');
+  if (currentInstrument === 'piano') {
+    wrap.innerHTML = '<div class="finder-piano-wrap">' + buildFinderPianoSVG() + '</div>';
+  } else {
+    const openPitches = currentInstrument === 'guitar' ? GTR_OPEN_PITCHES : currentInstrument === 'bass' ? BASS_OPEN_PITCHES : UKE_OPEN;
+    const strNames    = currentInstrument === 'guitar' ? GTR_NAMES : currentInstrument === 'bass' ? BASS_NAMES : ['G','C','E','A'];
+    const svgH        = currentInstrument === 'guitar' ? 170 : 140;
+    wrap.innerHTML = '<div class="finder-fretboard-wrap"><svg id="finderFretSvg" viewBox="0 0 340 ' + svgH + '" width="100%">' +
+      buildFinderFretboard(openPitches, strNames, svgH) + '</svg></div>';
+  }
+
+  // Update selected note tags
+  const tagsEl = document.getElementById('finderSelectedNotes');
+  if (finderSelectedNotes.size === 0) {
+    tagsEl.innerHTML = '<span style="color:var(--muted);font-style:italic;font-size:0.85rem">No notes selected yet</span>';
+  } else {
+    tagsEl.innerHTML = [...finderSelectedNotes].sort((a,b)=>a-b).map(s => {
+      const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[s]] || FINDER_NOTE_NAMES[s];
+      return '<div class="finder-note-tag" onclick="removeFinderPitch(' + s + ')" style="cursor:pointer" title="Tap to remove">' + label + ' ×</div>';
+    }).join('');
+  }
+}
+
+// Track individual tapped positions (string+fret) separately from pitch set
+let finderTappedPositions = new Set(); // keys like "s:f" (string index : fret)
+
+function removeFinderPitch(pitch) {
+  // Remove all tapped positions that produce this pitch
+  const openPitches = currentInstrument === 'guitar' ? GTR_OPEN_PITCHES : currentInstrument === 'bass' ? BASS_OPEN_PITCHES : UKE_OPEN;
+  finderTappedPositions.forEach(k => {
+    const [s, f] = k.split(':').map(Number);
+    if ((openPitches[s] + f) % 12 === pitch) finderTappedPositions.delete(k);
+  });
+  finderSelectedNotes.delete(pitch);
+  renderFinderDiagram();
+  updateFinderResults();
+}
+
+function tapFinderPosition(si, fret, pitch) {
+  const key = si + ':' + fret;
+  if (finderTappedPositions.has(key)) {
+    finderTappedPositions.delete(key);
+  } else {
+    finderTappedPositions.add(key);
+  }
+  // Rebuild pitch set from tapped positions
+  const openPitches = currentInstrument === 'guitar' ? GTR_OPEN_PITCHES : currentInstrument === 'bass' ? BASS_OPEN_PITCHES : UKE_OPEN;
+  finderSelectedNotes.clear();
+  finderTappedPositions.forEach(k => {
+    const [s, f] = k.split(':').map(Number);
+    finderSelectedNotes.add((openPitches[s] + f) % 12);
+  });
+  renderFinderDiagram();
+  updateFinderResults();
+}
+
+function buildFinderFretboard(openPitches, strNames, H) {
+  const FRET_COUNT = 12;
+  const W = 340;
+  const ml = 28, mr = 12, mt = 18, mb = 20;
+  const fw = W - ml - mr;
+  const fh = (H - mt - mb) / (openPitches.length - 1);
+  const fpf = fw / FRET_COUNT;
+  const r = 10;
+
+  let out = '';
+  out += '<rect x="' + ml + '" y="' + mt + '" width="4" height="' + (fh*(openPitches.length-1)) + '" rx="2" fill="#1a1b2e"/>';
+
+  for (let f = 1; f <= FRET_COUNT; f++) {
+    const x = ml + f * fpf;
+    out += '<line x1="' + x + '" y1="' + mt + '" x2="' + x + '" y2="' + (mt+fh*(openPitches.length-1)) + '" stroke="#c8cad8" stroke-width="1" opacity="0.6"/>';
+    if ([3,5,7,10,12].includes(f)) {
+      out += '<text x="' + (ml+(f-0.5)*fpf) + '" y="' + (H-4) + '" text-anchor="middle" font-size="8" fill="#8b8fa8" font-family="Lato">' + f + '</text>';
+    }
+  }
+
+  openPitches.forEach((open, si) => {
+    const y = mt + si * fh;
+    out += '<line x1="' + ml + '" y1="' + y + '" x2="' + (ml+fw) + '" y2="' + y + '" stroke="#c8cad8" stroke-width="1.5"/>';
+    out += '<text x="' + (ml-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="9" fill="#8b8fa8" font-family="Lato">' + strNames[si] + '</text>';
+
+    // Open string (fret 0)
+    const openPitch = open % 12;
+    const openKey   = si + ':0';
+    const openSel   = finderTappedPositions.has(openKey);
+    const openLabel = FINDER_DISPLAY[FINDER_NOTE_NAMES[openPitch]] || FINDER_NOTE_NAMES[openPitch];
+    out += '<circle cx="' + (ml-18) + '" cy="' + y + '" r="' + (r-1) + '" fill="' + (openSel?'#5b4fcf':'white') + '" stroke="' + (openSel?'#5b4fcf':'#8b8fa8') + '" stroke-width="1.5" style="cursor:pointer" onclick="tapFinderPosition(' + si + ',0,' + openPitch + ')"/>';
+    out += '<text x="' + (ml-18) + '" y="' + (y+3.5) + '" text-anchor="middle" font-size="7" fill="' + (openSel?'white':'#8b8fa8') + '" font-family="Lato" font-weight="700" style="pointer-events:none">' + openLabel + '</text>';
+
+    // Fretted positions
+    for (let f = 1; f <= FRET_COUNT; f++) {
+      const pitch = (open + f) % 12;
+      const cx    = ml + (f - 0.5) * fpf;
+      const key   = si + ':' + f;
+      const sel   = finderTappedPositions.has(key);
+      const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[pitch]] || FINDER_NOTE_NAMES[pitch];
+      if (sel) {
+        out += '<circle cx="' + cx + '" cy="' + y + '" r="' + r + '" fill="#5b4fcf" style="cursor:pointer" onclick="tapFinderPosition(' + si + ',' + f + ',' + pitch + ')"/>';
+        out += '<text x="' + cx + '" y="' + (y+3.5) + '" text-anchor="middle" font-size="7.5" fill="white" font-family="Lato" font-weight="700" style="pointer-events:none">' + label + '</text>';
+      } else {
+        out += '<circle cx="' + cx + '" cy="' + y + '" r="' + r + '" fill="transparent" stroke="transparent" style="cursor:pointer" onclick="tapFinderPosition(' + si + ',' + f + ',' + pitch + ')" onmouseover="this.setAttribute(&quot;stroke&quot;,&quot;#c8cad8&quot;)" onmouseout="this.setAttribute(&quot;stroke&quot;,&quot;transparent&quot;)"/>';
+      }
+    }
+  });
+
+  return out;
+}
+
+function buildFinderPianoSVG() {
+  const W = 300, H = 100;
+  const WHITE = [0,2,4,5,7,9,11];
+  const numWhites = 8;
+  const ww = W / numWhites;
+  const bw = ww * 0.6;
+  const wh = H;
+  const bh = H * 0.6;
+
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block">';
+
+  WHITE.concat([12]).forEach((semi, i) => {
+    const noteSemi = semi % 12;
+    const sel = finderSelectedNotes.has(noteSemi);
+    const fill = sel ? '#5b4fcf' : 'white';
+    const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[noteSemi]] || FINDER_NOTE_NAMES[noteSemi];
+    svg += '<rect x="' + (i*ww+0.5) + '" y="0.5" width="' + (ww-1) + '" height="' + (wh-1) + '" rx="3" fill="' + fill + '" stroke="#c8cad8" stroke-width="1" style="cursor:pointer" onclick="toggleFinderNote(' + noteSemi + ')"/>';
+    svg += '<text x="' + (i*ww+ww/2) + '" y="' + (wh-6) + '" text-anchor="middle" font-size="' + (ww*0.36) + '" fill="' + (sel?'white':'#8b8fa8') + '" font-family="Lato" font-weight="700" style="pointer-events:none">' + label + '</text>';
+  });
+
+  const blackSlots = [0,1,3,4,5];
+  const blackSemis = [1,3,6,8,10];
+  blackSlots.forEach((slot, i) => {
+    const noteSemi = blackSemis[i];
+    const sel  = finderSelectedNotes.has(noteSemi);
+    const fill = sel ? '#5b4fcf' : '#1a1b2e';
+    const x    = (slot+1)*ww - bw/2;
+    const label = FINDER_DISPLAY[FINDER_NOTE_NAMES[noteSemi]] || FINDER_NOTE_NAMES[noteSemi];
+    svg += '<rect x="' + x + '" y="0.5" width="' + bw + '" height="' + (bh-0.5) + '" rx="2" fill="' + fill + '" style="cursor:pointer" onclick="toggleFinderNote(' + noteSemi + ')"/>';
+    if (sel) svg += '<text x="' + (x+bw/2) + '" y="' + (bh-5) + '" text-anchor="middle" font-size="' + (bw*0.4) + '" fill="white" font-family="Lato" font-weight="700" style="pointer-events:none">' + label + '</text>';
+  });
+
+  svg += '</svg>';
+  return svg;
+}
+
+function updateFinderResults() {
+  const el = document.getElementById('finderResults');
+  if (finderSelectedNotes.size < 2) {
+    el.innerHTML = '';
+    return;
+  }
+
+  const selected = new Set([...finderSelectedNotes].map(s => s % 12));
+  const exact = [];
+  const partial = []; // selected notes are subset of chord, missing 1 tone
+
+  const SUFFIX = {major:'',minor:'m','7th':'7',maj7:'maj7',m7:'m7',dim:'dim',aug:'aug',
+    sus:'sus4',add9:'add9','6th':'6','9th':'9',m9:'m9',m7b5:'m7b5','7aug':'7aug'};
+
+  FINDER_ROOT_NAMES.forEach(root => {
+    const rootSemi = {C:0,'C#':1,D:2,Eb:3,E:4,F:5,'F#':6,G:7,Ab:8,A:9,Bb:10,B:11}[root];
+    Object.entries(FINDER_TYPE_INTERVALS).forEach(([type, intervals]) => {
+      const chordTones = intervals.map(i => (rootSemi + i) % 12);
+      const chordSet   = new Set(chordTones);
+      const suffix     = SUFFIX[type] || '';
+      const name       = root + suffix;
+      const full       = root + ' ' + FINDER_TYPE_NAMES[type];
+
+      const selArr   = [...selected];
+      const allIn    = selArr.every(s => chordSet.has(s));
+      const missing  = [...chordSet].filter(s => !selected.has(s));
+
+      if (allIn && chordSet.size === selected.size) {
+        // Perfect exact match
+        exact.push({ name, full, type, label: '' });
+      } else if (allIn && missing.length === 1) {
+        // Shell voicing — all selected notes are chord tones, just missing 1
+        const missingName = FINDER_DISPLAY[FINDER_NOTE_NAMES[missing[0]]] || FINDER_NOTE_NAMES[missing[0]];
+        partial.push({ name, full, type, label: 'omit ' + missingName });
+      }
+    });
+  });
+
+  if (exact.length === 0 && partial.length === 0) {
+    el.innerHTML = '<div class="finder-no-match">No chord match found.<br><span style="font-size:0.8rem">Try adding or removing a note.</span></div>';
+    return;
+  }
+
+  let html = '';
+
+  if (exact.length > 0) {
+    html += '<div class="finder-results-title">Exact Match</div>' +
+      '<div class="finder-results-grid">' +
+      exact.map(m => '<div class="finder-result-card" onclick="showDetail(\'' + m.name + '\')">' +
+        '<div class="finder-result-name">' + m.name + '</div>' +
+        '<div class="finder-result-full">' + m.full + '</div>' +
+      '</div>').join('') + '</div>';
+  }
+
+  if (partial.length > 0) {
+    html += '<div class="finder-results-title" style="margin-top:' + (exact.length?'16px':'0') + '">Shell / Partial Voicing</div>' +
+      '<div class="finder-results-grid">' +
+      partial.map(m => '<div class="finder-result-card" onclick="showDetail(\'' + m.name + '\')">' +
+        '<div class="finder-result-name">' + m.name + '</div>' +
+        '<div class="finder-result-full">' + m.full + '</div>' +
+        '<div style="font-size:0.62rem;color:var(--muted);margin-top:3px;letter-spacing:0.06em;text-transform:uppercase">' + m.label + '</div>' +
+      '</div>').join('') + '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+
+</script>
+</body>
+</html>
