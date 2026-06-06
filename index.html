@@ -486,6 +486,33 @@ body {
 }
 .song-add-chord-btn:hover { border-color: var(--text); color: var(--text); background: var(--bg); }
 
+/* ── SONG NAME OVERLAY ───────────────────── */
+.song-name-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
+  z-index: 120; align-items: center; justify-content: center; padding: 20px;
+}
+.song-name-overlay.open { display: flex; }
+.song-name-sheet {
+  background: var(--surface); border-radius: 16px;
+  padding: 24px 20px 20px;
+  width: 100%; max-width: 360px;
+  animation: slideUp 0.2s ease;
+}
+.song-name-sheet h3 {
+  font-size: 1rem; font-weight: 700; letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.song-name-input {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif; font-size: 0.95rem;
+  color: var(--text); outline: none; margin-bottom: 14px;
+  transition: border-color 0.15s;
+}
+.song-name-input:focus { border-color: var(--accent); }
+.song-name-actions { display: flex; gap: 8px; }
+
 /* ── CHORD BUILDER OVERLAY ───────────────── */
 .builder-overlay {
   display: none; position: fixed; inset: 0;
@@ -769,6 +796,19 @@ body {
 
 <!-- SONGS PAGE -->
 <div id="songs" class="page"></div>
+
+<!-- SONG NAME OVERLAY -->
+<div class="song-name-overlay" id="songNameOverlay">
+  <div class="song-name-sheet">
+    <h3>New Song</h3>
+    <input class="song-name-input" id="songNameInput" type="text" placeholder="Song name…" maxlength="60"
+      onkeydown="if(event.key==='Enter')confirmSongName()">
+    <div class="song-name-actions">
+      <button class="builder-cancel-btn" onclick="closeSongNameOverlay()">Cancel</button>
+      <button class="builder-confirm-btn" onclick="confirmSongName()">Create</button>
+    </div>
+  </div>
+</div>
 
 <!-- CHORD BUILDER OVERLAY -->
 <div class="builder-overlay" id="builderOverlay">
@@ -2086,11 +2126,23 @@ function saveSongs(songs) {
 }
 
 function createSong() {
-  const name = prompt('Song name:', 'Untitled Song');
-  if (!name || !name.trim()) return;
+  const input = document.getElementById('songNameInput');
+  input.value = '';
+  document.getElementById('songNameOverlay').classList.add('open');
+  setTimeout(() => input.focus(), 50);
+}
+
+function closeSongNameOverlay() {
+  document.getElementById('songNameOverlay').classList.remove('open');
+}
+
+function confirmSongName() {
+  const name = document.getElementById('songNameInput').value.trim();
+  if (!name) return;
+  closeSongNameOverlay();
   const songs = getSongs();
   const id = Date.now().toString();
-  songs.push({ id, name: name.trim(), chords: [] });
+  songs.push({ id, name, chords: [] });
   saveSongs(songs);
   openSong(id);
 }
