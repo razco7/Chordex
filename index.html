@@ -1408,8 +1408,8 @@ function buildFretDiagram(chord, W, H, fontSize, stringCount) {
     svg += `<text x="${ml - 4}" y="${mt + fh*0.6}" text-anchor="end" font-size="8" fill="#8b8fa8" font-family="Inter, system-ui, sans-serif">${startFret}fr</text>`;
   }
 
-  // Fret lines
-  for (let f = 0; f <= frets; f++) {
+  // Fret lines (start at 1 so the nut isn't doubled by a line at mt)
+  for (let f = 1; f <= frets; f++) {
     const y = mt + f * fh;
     svg += `<line x1="${ml}" y1="${y}" x2="${ml+(stringCount-1)*sw}" y2="${y}" stroke="#c8cad8" stroke-width="0.8" opacity="0.5"/>`;
   }
